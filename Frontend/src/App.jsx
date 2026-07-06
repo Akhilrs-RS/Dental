@@ -114,7 +114,7 @@ export default function App() {
 
         <div className="sidebar-footer">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0 8px' }}>
-            <div style={{ width: 34, height: 34, borderRadius: '50%', backgroundColor: 'var(--primary-teal)', display: 'flex', alignItems: 'center', justifycontent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '14px' }}>
+            <div style={{ width: 34, height: 34, borderRadius: '50%', backgroundColor: 'var(--primary-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '14px' }}>
               SC
             </div>
             <div>
