@@ -9,7 +9,7 @@ const SURFACES = [
   { id: 'lingual', label: 'Lingual (Inner)' }
 ];
 
-export default function DentalChart({ patient, onChangeChart }) {
+export default function DentalChart({ patient, onChangeChart, userRole }) {
   const [selectedTooth, setSelectedTooth] = useState(null);
   const [selectedSurfaces, setSelectedSurfaces] = useState([]);
   const [appliedStatus, setAppliedStatus] = useState('decay');
@@ -125,7 +125,7 @@ export default function DentalChart({ patient, onChangeChart }) {
   };
 
   // Render a single tooth component
-  const renderTooth = (num) => {
+  const renderTooth = (num, x, y, rotDeg) => {
     const isSelected = selectedTooth === num;
     const toothData = patientChart[num];
     const isMissing = toothData?.condition === 'missing';
@@ -133,10 +133,23 @@ export default function DentalChart({ patient, onChangeChart }) {
     return (
       <div 
         key={num} 
-        className={`tooth-item ${isSelected ? 'selected' : ''}`}
+        className={`tooth-item ${isSelected ? 'selected' : ''} ${isMissing ? 'missing' : ''}`}
         onClick={() => handleToothClick(num)}
+        style={{
+          position: 'absolute',
+          left: `${x}px`,
+          top: `${y}px`,
+          transform: 'translate(-50%, -50%)',
+          zIndex: isSelected ? 10 : 2
+        }}
       >
-        <div className="tooth-svg-wrapper">
+        <div 
+          className="tooth-svg-wrapper"
+          style={{
+            transform: `rotate(${rotDeg}deg)`,
+            transformOrigin: 'center center'
+          }}
+        >
           {/* Custom SVG Drawing of a tooth Silhouette */}
           <svg viewBox="0 0 100 120" width="100%" height="100%">
             {/* Tooth Crown */}
@@ -175,7 +188,7 @@ export default function DentalChart({ patient, onChangeChart }) {
             <div 
               style={{
                 position: 'absolute',
-                top: '12px',
+                top: '8px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 5
@@ -199,36 +212,87 @@ export default function DentalChart({ patient, onChangeChart }) {
   const upperTeeth = Array.from({ length: 16 }, (_, i) => i + 1);
   const lowerTeeth = Array.from({ length: 16 }, (_, i) => 32 - i); // Render 32 to 17 left-to-right to match dental notation
 
+  // 3D Arch layout coordinates mapping parameters
+  const cx = 300;
+  const cyUpper = 240;
+  const cyLower = 460;
+  const rx = 180;
+  const ry = 135;
+  const tMin = 0.08 * Math.PI;
+  const tMax = 0.92 * Math.PI;
+  
+  const tValues = Array.from(
+    { length: 16 },
+    (_, idx) => tMin + (idx * (tMax - tMin)) / 15
+  );
+
   return (
     <div className="card" style={{ width: '100%' }}>
       <div className="flex-between">
-        <h2>Interactive 2D Dental Charting</h2>
+        <h2>Interactive 3D Orthodontic Arch Charting</h2>
         <div className="badge badge-info">Patient: {patient.name}</div>
       </div>
       <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
         Select a tooth below to map diagnostic findings or completed dental procedures. Hover surfaces to see statuses.
       </p>
 
-      {/* Dental Chart Grid */}
-      <div className="dental-chart-container">
-        {/* Upper Arch */}
-        <div style={{ width: '100%', textAlign: 'center', fontWeight: 'bold', fontSize: '12px', color: 'var(--text-muted)' }}>
-          UPPER MAXILLARY ARCH
-        </div>
-        <div className="jaw-row">
-          {upperTeeth.map(renderTooth)}
-        </div>
+      {/* Dental Chart 3D Arch Container */}
+      <div className="dental-chart-arch-container">
+        {/* SVG background arches (gums, palate, tongue) */}
+        <svg viewBox="0 0 600 700" className="dental-chart-arch-bg">
+          {/* Upper Palate Background */}
+          <path 
+            d="M 125,225 Q 300,105 475,225 Z" 
+            fill="rgba(239, 68, 68, 0.04)" 
+          />
+          {/* Upper Gums Arch Line */}
+          <path 
+            d="M 125,225 Q 300,105 475,225" 
+            fill="none" 
+            stroke="rgba(239, 68, 68, 0.16)" 
+            strokeWidth="48" 
+            strokeLinecap="round" 
+          />
 
-        {/* Mid-Arch Divider */}
-        <div style={{ width: '90%', height: '2px', backgroundColor: 'var(--border-color)', margin: '10px 0' }}></div>
+          {/* Lower Tongue Cavity Background */}
+          <path 
+            d="M 125,475 Q 300,595 475,475 Z" 
+            fill="rgba(239, 68, 68, 0.04)" 
+          />
+          {/* Lower Gums Arch Line */}
+          <path 
+            d="M 125,475 Q 300,595 475,475" 
+            fill="none" 
+            stroke="rgba(239, 68, 68, 0.16)" 
+            strokeWidth="48" 
+            strokeLinecap="round" 
+          />
+          
+          {/* Occlusal Plane Guideline */}
+          <line x1="80" y1="350" x2="520" y2="350" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="6,6" opacity="0.3" />
+          
+          {/* Arch Labels */}
+          <text x="300" y="45" fill="var(--text-muted)" fontSize="12" fontWeight="bold" textAnchor="middle" letterSpacing="1.5">UPPER MAXILLARY ARCH</text>
+          <text x="300" y="665" fill="var(--text-muted)" fontSize="12" fontWeight="bold" textAnchor="middle" letterSpacing="1.5">LOWER MANDIBULAR ARCH</text>
+        </svg>
 
-        {/* Lower Arch */}
-        <div className="jaw-row">
-          {lowerTeeth.map(renderTooth)}
-        </div>
-        <div style={{ width: '100%', textAlign: 'center', fontWeight: 'bold', fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
-          LOWER MANDIBULAR ARCH
-        </div>
+        {/* Upper Arch Teeth */}
+        {upperTeeth.map((num, idx) => {
+          const t = tValues[idx];
+          const x = cx - rx * Math.cos(t);
+          const y = cyUpper - ry * Math.sin(t);
+          const rotDeg = (t - Math.PI / 2) * (180 / Math.PI);
+          return renderTooth(num, x, y, rotDeg);
+        })}
+
+        {/* Lower Arch Teeth */}
+        {lowerTeeth.map((num, idx) => {
+          const t = tValues[idx];
+          const x = cx - rx * Math.cos(t);
+          const y = cyLower + ry * Math.sin(t);
+          const rotDeg = 180 - (t - Math.PI / 2) * (180 / Math.PI);
+          return renderTooth(num, x, y, rotDeg);
+        })}
       </div>
 
       {/* Chart Legend */}
@@ -263,71 +327,79 @@ export default function DentalChart({ patient, onChangeChart }) {
                 Tooth #{selectedTooth} - <span style={{ fontSize: '14px', fontWeight: 'normal', color: 'var(--text-secondary)' }}>{getToothStatusLabel(selectedTooth)}</span>
               </h3>
               
-              {/* Surface multi-select */}
-              {patientChart[selectedTooth]?.condition !== 'missing' && (
-                <div className="mt-md">
-                  <p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>Select Impacted Surfaces:</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {SURFACES.map(surf => {
-                      const isChecked = selectedSurfaces.includes(surf.id);
-                      return (
-                        <button
-                          key={surf.id}
-                          className={`btn ${isChecked ? 'btn-primary' : 'btn-secondary'}`}
-                          style={{ padding: '6px 12px', fontSize: '12px' }}
-                          onClick={() => toggleSurface(surf.id)}
-                        >
-                          {surf.label}
-                        </button>
-                      );
-                    })}
+              {userRole === 'doctor' ? (
+                <>
+                  {/* Surface multi-select */}
+                  {patientChart[selectedTooth]?.condition !== 'missing' && (
+                    <div className="mt-md">
+                      <p style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>Select Impacted Surfaces:</p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {SURFACES.map(surf => {
+                          const isChecked = selectedSurfaces.includes(surf.id);
+                          return (
+                            <button
+                              key={surf.id}
+                              className={`btn ${isChecked ? 'btn-primary' : 'btn-secondary'}`}
+                              style={{ padding: '6px 12px', fontSize: '12px' }}
+                              onClick={() => toggleSurface(surf.id)}
+                            >
+                              {surf.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Status Apply Selector */}
+                  <div className="mt-md" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div className="form-group">
+                      <label>Diagnostics / Treatments</label>
+                      <select 
+                        className="form-control"
+                        value={appliedStatus}
+                        onChange={(e) => setAppliedStatus(e.target.value)}
+                      >
+                        <optgroup label="Clear / Reset">
+                          <option value="healthy">Healthy (Clear Condition)</option>
+                        </optgroup>
+                        <optgroup label="Pathology (Conditions)">
+                          <option value="decay">Decay / Cavity</option>
+                          <option value="fracture">Fractured Tooth</option>
+                          <option value="missing">Missing / Extracted</option>
+                        </optgroup>
+                        <optgroup label="Procedures (Treatments)">
+                          <option value="filling">Composite Filling</option>
+                          <option value="crown">Porcelain Crown</option>
+                          <option value="rct">Root Canal Therapy</option>
+                        </optgroup>
+                      </select>
+                    </div>
+
+                    {/* Treatment Notes */}
+                    {['filling', 'crown', 'rct'].includes(appliedStatus) && (
+                      <div className="form-group">
+                        <label>Treatment Notes</label>
+                        <input 
+                          type="text" 
+                          className="form-control" 
+                          placeholder="e.g. Composite resin on D-O" 
+                          value={treatmentNotes}
+                          onChange={(e) => setTreatmentNotes(e.target.value)}
+                        />
+                      </div>
+                    )}
                   </div>
+                  
+                  <button className="btn btn-primary mt-md" onClick={handleApplyStatus}>
+                    Update Tooth Status
+                  </button>
+                </>
+              ) : (
+                <div style={{ backgroundColor: 'var(--primary-teal-light)', padding: '16px', borderRadius: '10px', fontSize: '13px', marginTop: '16px', border: '1px dashed var(--border-color)' }}>
+                  🔒 <strong>Clinical Charting Restricted:</strong> Dental charting and diagnosis mapping are authorized for the Doctor role only.
                 </div>
               )}
-
-              {/* Status Apply Selector */}
-              <div className="mt-md" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label>Diagnostics / Treatments</label>
-                  <select 
-                    className="form-control"
-                    value={appliedStatus}
-                    onChange={(e) => setAppliedStatus(e.target.value)}
-                  >
-                    <optgroup label="Clear / Reset">
-                      <option value="healthy">Healthy (Clear Condition)</option>
-                    </optgroup>
-                    <optgroup label="Pathology (Conditions)">
-                      <option value="decay">Decay / Cavity</option>
-                      <option value="fracture">Fractured Tooth</option>
-                      <option value="missing">Missing / Extracted</option>
-                    </optgroup>
-                    <optgroup label="Procedures (Treatments)">
-                      <option value="filling">Composite Filling</option>
-                      <option value="crown">Porcelain Crown</option>
-                      <option value="rct">Root Canal Therapy</option>
-                    </optgroup>
-                  </select>
-                </div>
-
-                {/* Treatment Notes */}
-                {['filling', 'crown', 'rct'].includes(appliedStatus) && (
-                  <div className="form-group">
-                    <label>Treatment Notes</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      placeholder="e.g. Composite resin on D-O" 
-                      value={treatmentNotes}
-                      onChange={(e) => setTreatmentNotes(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
-              
-              <button className="btn btn-primary mt-md" onClick={handleApplyStatus}>
-                Update Tooth Status
-              </button>
             </div>
 
             {/* Tooth History Log */}

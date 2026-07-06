@@ -1,8 +1,18 @@
-import React from 'react';
-import { CLINIC_ANALYTICS, INITIAL_APPOINTMENTS } from '../data/mockData';
+import React, { useState } from 'react';
+import { CLINIC_ANALYTICS } from '../data/mockData';
 
-export default function Dashboard({ onViewScheduler, onViewPatient }) {
+export default function Dashboard({ 
+  userRole, 
+  patients = [], 
+  appointments = [], 
+  onCheckInPatient, 
+  onRegisterPatient, 
+  onViewScheduler, 
+  onViewPatient,
+  onUpdateAppointment 
+}) {
   const { dailyRevenue, monthlyRevenue, occupancyRate, activePatients, procedureBreakdown, revenueHistory } = CLINIC_ANALYTICS;
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Render SVG Area Chart for Revenue History
   const renderRevenueChart = () => {
@@ -178,6 +188,164 @@ export default function Dashboard({ onViewScheduler, onViewPatient }) {
           </div>
         </div>
       </div>
+
+      {/* Role-Based Intake & Waiting Room Queue Panels */}
+      {userRole === 'receptionist' ? (
+        <div className="card" style={{ borderLeft: '4px solid var(--secondary-blue)' }}>
+          <div className="flex-between mb-sm" style={{ flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <h2>Patient Intake & Reception Lounge</h2>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                Search for an existing patient to check them in, or register first-time visits.
+              </p>
+            </div>
+            <button className="btn btn-primary" onClick={onRegisterPatient}>
+              + Register First-Time Patient
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '16px', alignItems: 'center' }}>
+            <input 
+              type="text"
+              className="form-control"
+              placeholder="Search patients by name, phone or ID to check in..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ flexGrow: 1 }}
+            />
+            {searchTerm && (
+              <button className="btn btn-secondary" onClick={() => setSearchTerm('')} style={{ padding: '8px 16px' }}>
+                Clear
+              </button>
+            )}
+          </div>
+
+          {/* Intake Patient List */}
+          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {patients
+              .filter(p => 
+                !searchTerm || 
+                p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                p.phone.includes(searchTerm)
+              )
+              .slice(0, searchTerm ? 5 : 3)
+              .map(p => {
+                const today = new Date().toISOString().split('T')[0];
+                const todayApt = appointments.find(apt => apt.patientId === p.id && apt.date === today);
+                
+                return (
+                  <div key={p.id} className="flex-between" style={{ padding: '12px 16px', backgroundColor: 'var(--bg-app)', borderRadius: '8px', border: '1px solid var(--border-color)', flexWrap: 'wrap', gap: '12px' }}>
+                    <div>
+                      <strong style={{ color: 'var(--text-primary)', fontSize: '14px' }}>{p.name}</strong>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '8px' }}>ID: {p.id}</span>
+                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        Age/Gender: {p.age} yrs, {p.gender} | Contact: {p.phone}
+                      </div>
+                      {p.medicalAlerts && p.medicalAlerts.length > 0 && (
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+                          {p.medicalAlerts.map((al, aIdx) => (
+                            <span key={aIdx} className="badge badge-danger" style={{ fontSize: '9px', padding: '1px 4px' }}>{al}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex-row-center" style={{ gap: '10px' }}>
+                      {todayApt ? (
+                        <>
+                          {todayApt.status === 'checked-in' && (
+                            <span className="badge badge-warning" style={{ fontSize: '11px' }}>Waiting Lounge</span>
+                          )}
+                          {todayApt.status === 'in-chair' && (
+                            <span className="badge badge-danger" style={{ fontSize: '11px' }}>In Chair</span>
+                          )}
+                          {todayApt.status === 'completed' && (
+                            <span className="badge badge-success" style={{ fontSize: '11px' }}>Completed Visit</span>
+                          )}
+                          {(todayApt.status === 'scheduled' || todayApt.status === 'confirmed') && (
+                            <button 
+                              className="btn btn-primary" 
+                              style={{ padding: '6px 12px', fontSize: '11px' }}
+                              onClick={() => onCheckInPatient(p.id, todayApt.room, todayApt.dentist, todayApt.type)}
+                            >
+                              Check In for Visit
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <button 
+                          className="btn btn-secondary" 
+                          style={{ padding: '6px 12px', fontSize: '11px', borderColor: 'var(--primary-teal)', color: 'var(--primary-teal)' }}
+                          onClick={() => onCheckInPatient(p.id)}
+                        >
+                          Check In (Walk-In)
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      ) : (
+        /* Doctor view: Waiting Lounge / Queue */
+        <div className="card" style={{ borderLeft: '4px solid var(--primary-teal)' }}>
+          <h2>Live Patients Waiting Lounge (Admissions Queue)</h2>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+            The following patients have been checked in by reception and are waiting in the clinic lounge.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {appointments.filter(apt => apt.status === 'checked-in').length > 0 ? (
+              appointments
+                .filter(apt => apt.status === 'checked-in')
+                .map(apt => {
+                  const pt = patients.find(p => p.id === apt.patientId) || {};
+                  return (
+                    <div key={apt.id} className="flex-between animate-fade-in" style={{ padding: '12px 16px', backgroundColor: 'var(--bg-app)', borderRadius: '8px', border: '1px dashed var(--primary-teal)', flexWrap: 'wrap', gap: '12px' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--color-decay)', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
+                          <strong style={{ fontSize: '15px', color: 'var(--text-primary)' }}>{apt.patientName}</strong>
+                          <span className="badge badge-warning" style={{ fontSize: '9px', padding: '2px 6px' }}>Checked-In</span>
+                        </div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                          Age: {pt.age || 'N/A'} yrs | Phone: {pt.phone || 'N/A'} | Scheduled Room: <strong>{apt.room}</strong>
+                        </div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          Visit Objective: <strong style={{ color: 'var(--text-primary)' }}>{apt.type}</strong>
+                        </div>
+                      </div>
+
+                      <button 
+                        className="btn btn-primary"
+                        style={{ padding: '8px 16px', fontSize: '12px', fontWeight: 600 }}
+                        onClick={() => {
+                          onUpdateAppointment(apt.id, { ...apt, status: 'in-chair' });
+                          onViewPatient(apt.patientId);
+                        }}
+                      >
+                        Admit to Chair & Start EHR
+                      </button>
+                    </div>
+                  );
+                })
+            ) : (
+              <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', backgroundColor: 'rgba(13, 148, 136, 0.03)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
+                🍃 All clear. No patients currently waiting in the lounge.
+              </div>
+            )}
+          </div>
+          <style>{`
+            @keyframes pulse {
+              0% { opacity: 0.3; transform: scale(0.9); }
+              50% { opacity: 1; transform: scale(1.1); }
+              100% { opacity: 0.3; transform: scale(0.9); }
+            }
+          `}</style>
+        </div>
+      )}
 
       {/* Main Charts Area */}
       <div className="dashboard-main-layout">

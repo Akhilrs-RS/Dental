@@ -4,6 +4,8 @@ import Dashboard from './components/Dashboard';
 import Scheduler from './components/Scheduler';
 import PatientEHR from './components/PatientEHR';
 import TreatmentPlanner from './components/TreatmentPlanner';
+import RegisterPatientModal from './components/RegisterPatientModal';
+import WhatsAppSimulator from './components/WhatsAppSimulator';
 
 export default function App() {
   const [patients, setPatients] = useState(INITIAL_PATIENTS);
@@ -11,6 +13,9 @@ export default function App() {
   const [activePatientId, setActivePatientId] = useState('P-101');
   const [currentView, setCurrentView] = useState('dashboard');
   const [themeMode, setThemeMode] = useState('dark');
+  const [userRole, setUserRole] = useState('receptionist'); // receptionist vs doctor
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [whatsappNotification, setWhatsappNotification] = useState(null);
 
   // Sync theme mode with body class
   useEffect(() => {
@@ -46,6 +51,44 @@ export default function App() {
     setPatients(prevPatients =>
       prevPatients.map(p => (p.id === patientId ? updatedPatient : p))
     );
+  };
+
+  // Register Patient
+  const handleRegisterPatient = (newPatientData) => {
+    const nextIdNum = Math.max(...patients.map(p => parseInt(p.id.replace('P-', '')))) + 1;
+    const newPatient = {
+      id: `P-${nextIdNum}`,
+      ...newPatientData,
+      chart: {},
+      xrays: [],
+      visits: []
+    };
+    setPatients(prev => [...prev, newPatient]);
+    setActivePatientId(newPatient.id);
+  };
+
+  // Check In Patient
+  const handleCheckInPatient = (patientId, room = 'Operatory A', dentist = 'Dr. Sarah Carter', type = 'Walk-In Consultation') => {
+    const today = new Date().toISOString().split('T')[0];
+    const existingIdx = appointments.findIndex(apt => apt.patientId === patientId && apt.date === today);
+    if (existingIdx !== -1) {
+      setAppointments(prev => prev.map((apt, idx) => idx === existingIdx ? { ...apt, status: 'checked-in' } : apt));
+    } else {
+      const patientObj = patients.find(p => p.id === patientId);
+      const newApt = {
+        id: 'apt-' + Date.now(),
+        patientId,
+        patientName: patientObj ? patientObj.name : 'Unknown Patient',
+        time: new Date().toTimeString().split(' ')[0].substring(0, 5),
+        duration: 30,
+        room,
+        dentist,
+        type,
+        status: 'checked-in',
+        date: today
+      };
+      setAppointments(prev => [...prev, newApt]);
+    }
   };
 
   // Scheduler: Add appointment
@@ -113,13 +156,42 @@ export default function App() {
         </nav>
 
         <div className="sidebar-footer">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0 8px' }}>
-            <div style={{ width: 34, height: 34, borderRadius: '50%', backgroundColor: 'var(--primary-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '14px' }}>
-              SC
+          {/* User Role Switcher */}
+          <div style={{ padding: '8px', borderBottom: '1px solid var(--border-color)', marginBottom: '12px', width: '100%' }}>
+            <label style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600, display: 'block', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Active User Role
+            </label>
+            <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--bg-app)', padding: '2px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <button 
+                type="button"
+                className={`btn ${userRole === 'receptionist' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ flex: 1, padding: '6px 4px', fontSize: '10px', border: 'none', borderRadius: '6px', minWidth: '0' }}
+                onClick={() => setUserRole('receptionist')}
+              >
+                Receptionist
+              </button>
+              <button 
+                type="button"
+                className={`btn ${userRole === 'doctor' ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ flex: 1, padding: '6px 4px', fontSize: '10px', border: 'none', borderRadius: '6px', minWidth: '0' }}
+                onClick={() => setUserRole('doctor')}
+              >
+                Doctor
+              </button>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0 8px', width: '100%', marginBottom: '12px' }}>
+            <div style={{ width: 34, height: 34, borderRadius: '50%', backgroundColor: userRole === 'doctor' ? 'var(--primary-teal)' : 'var(--secondary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 'bold', fontSize: '14px' }}>
+              {userRole === 'doctor' ? 'SC' : 'ES'}
             </div>
             <div>
-              <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>Dr. Sarah Carter</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Lead Dentist</div>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                {userRole === 'doctor' ? 'Dr. Sarah Carter' : 'Emily Stone'}
+              </div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                {userRole === 'doctor' ? 'Lead Dentist' : 'Receptionist'}
+              </div>
             </div>
           </div>
           
@@ -145,7 +217,7 @@ export default function App() {
           <div className="header-actions">
             <div className="flex-row-center" style={{ backgroundColor: 'var(--primary-teal-light)', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', border: '1px solid var(--border-color)' }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: 'var(--color-healthy)', display: 'inline-block', marginRight: '6px' }} />
-              <strong>Clinic Database Connected</strong>
+              <strong>Clinic Database Connected ({userRole.toUpperCase()})</strong>
             </div>
           </div>
         </header>
@@ -154,13 +226,23 @@ export default function App() {
         <div style={{ flexGrow: 1 }}>
           {currentView === 'dashboard' && (
             <Dashboard 
+              userRole={userRole}
+              patients={patients}
+              appointments={appointments}
+              onCheckInPatient={handleCheckInPatient}
+              onRegisterPatient={() => setShowRegisterModal(true)}
               onViewScheduler={() => setCurrentView('scheduler')}
-              onViewPatient={() => setCurrentView('patients')}
+              onViewPatient={(patientId) => {
+                if (patientId) setActivePatientId(patientId);
+                setCurrentView('patients');
+              }}
+              onUpdateAppointment={handleUpdateAppointment}
             />
           )}
 
           {currentView === 'scheduler' && (
             <Scheduler 
+              userRole={userRole}
               appointments={appointments}
               patients={patients}
               onAddAppointment={handleAddAppointment}
@@ -171,24 +253,43 @@ export default function App() {
 
           {currentView === 'patients' && (
             <PatientEHR 
+              userRole={userRole}
               patients={patients}
               activePatientId={activePatientId}
               onSelectPatient={setActivePatientId}
               onChangeChart={handleUpdateChart}
               onAddVisitNote={handleAddVisitNote}
+              onCheckInPatient={handleCheckInPatient}
+              onUpdatePatient={handleUpdatePatient}
             />
           )}
 
           {currentView === 'planner' && (
             <TreatmentPlanner 
+              userRole={userRole}
               patients={patients}
+              appointments={appointments}
               activePatientId={activePatientId}
               onUpdatePatient={handleUpdatePatient}
               onSelectPatient={setActivePatientId}
+              onAddAppointment={handleAddAppointment}
+              onSendWhatsApp={(notif) => setWhatsappNotification(notif)}
             />
           )}
         </div>
       </main>
+
+      {/* Global Modals & Simulators */}
+      <RegisterPatientModal 
+        isOpen={showRegisterModal} 
+        onClose={() => setShowRegisterModal(false)} 
+        onRegister={handleRegisterPatient}
+      />
+      
+      <WhatsAppSimulator 
+        notification={whatsappNotification} 
+        onClose={() => setWhatsappNotification(null)}
+      />
 
     </div>
   );

@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DentalChart from './DentalChart';
+import teethProfileImg from '../assets/teeth_profile.png';
 
-export default function PatientEHR({ patients, activePatientId, onSelectPatient, onChangeChart, onAddVisitNote }) {
+export default function PatientEHR({ 
+  userRole, 
+  patients, 
+  activePatientId, 
+  onSelectPatient, 
+  onChangeChart, 
+  onAddVisitNote, 
+  onCheckInPatient, 
+  onUpdatePatient 
+}) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('chart');
   const [selectedXray, setSelectedXray] = useState(null);
@@ -12,6 +22,18 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
   const [contrast, setContrast] = useState(100);
   const [invert, setInvert] = useState(false);
 
+  // Demographics Edit States
+  const [isEditingDemographics, setIsEditingDemographics] = useState(false);
+  const [editAge, setEditAge] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editAddress, setEditAddress] = useState('');
+  const [editInsProvider, setEditInsProvider] = useState('');
+  const [editInsPolicy, setEditInsPolicy] = useState('');
+  const [editInsCoverage, setEditInsCoverage] = useState('80');
+  const [editInsDeductible, setEditInsDeductible] = useState(false);
+  const [editAlerts, setEditAlerts] = useState('');
+
   // Filter patients
   const filteredPatients = patients.filter(p => 
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -19,6 +41,44 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
   );
 
   const activePatient = patients.find(p => p.id === activePatientId) || patients[0];
+
+  useEffect(() => {
+    if (activePatient) {
+      setEditAge(activePatient.age || '');
+      setEditPhone(activePatient.phone || '');
+      setEditEmail(activePatient.email || '');
+      setEditAddress(activePatient.address || '');
+      setEditInsProvider(activePatient.insurance?.provider || '');
+      setEditInsPolicy(activePatient.insurance?.policyNumber || '');
+      setEditInsCoverage(activePatient.insurance?.coveragePercent || '80');
+      setEditInsDeductible(activePatient.insurance?.deductibleMet || false);
+      setEditAlerts(activePatient.medicalAlerts?.join(', ') || '');
+      setIsEditingDemographics(false);
+    }
+  }, [activePatientId]);
+
+  const handleSaveDemographics = (e) => {
+    e.preventDefault();
+    if (!onUpdatePatient) return;
+    const updatedPatient = {
+      ...activePatient,
+      age: parseInt(editAge) || activePatient.age,
+      phone: editPhone,
+      email: editEmail,
+      address: editAddress,
+      insurance: {
+        provider: editInsProvider,
+        policyNumber: editInsPolicy,
+        coveragePercent: parseInt(editInsCoverage) || 0,
+        deductibleMet: editInsDeductible
+      },
+      medicalAlerts: editAlerts
+        ? editAlerts.split(',').map(a => a.trim()).filter(Boolean)
+        : []
+    };
+    onUpdatePatient(activePatient.id, updatedPatient);
+    setIsEditingDemographics(false);
+  };
 
   const handleAddNoteSubmit = (e) => {
     e.preventDefault();
@@ -137,9 +197,14 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
                   setSelectedXray(null);
                 }}
               >
-                <div className="patient-list-name">{p.name}</div>
-                <div className="patient-list-meta">
-                  <span>ID: {p.id}</span> • <span>{p.gender}, {p.age} yrs</span>
+                <div className="patient-list-teeth-avatar-container">
+                  <img src={teethProfileImg} alt="Teeth Scan" className="patient-list-teeth-avatar" />
+                </div>
+                <div style={{ flexGrow: 1 }}>
+                  <div className="patient-list-name">{p.name}</div>
+                  <div className="patient-list-meta">
+                    <span>ID: {p.id}</span> • <span>{p.gender}, {p.age} yrs</span>
+                  </div>
                 </div>
               </div>
             ))
@@ -156,10 +221,15 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
           {/* Patient Demographic Card */}
           <div className="card">
             <div className="ehr-header">
-              <div>
-                <h2 style={{ fontSize: '24px' }}>{activePatient.name}</h2>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '2px' }}>
-                  Patient Identifier: <strong style={{ color: 'var(--primary-teal)' }}>{activePatient.id}</strong>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div className="patient-teeth-avatar-container">
+                  <img src={teethProfileImg} alt="Patient Teeth Scan" className="patient-teeth-avatar" />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '24px' }}>{activePatient.name}</h2>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '2px' }}>
+                    Patient Identifier: <strong style={{ color: 'var(--primary-teal)' }}>{activePatient.id}</strong>
+                  </div>
                 </div>
               </div>
 
@@ -177,25 +247,98 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
               </div>
             </div>
 
-            {/* Meta Grid */}
-            <div className="patient-meta-grid">
-              <div className="meta-field">
-                <label>Age / Gender</label>
-                <p>{activePatient.age} years / {activePatient.gender}</p>
-              </div>
-              <div className="meta-field">
-                <label>Contact Phone</label>
-                <p>{activePatient.phone}</p>
-              </div>
-              <div className="meta-field">
-                <label>Insurance Provider</label>
-                <p>{activePatient.insurance.provider} ({activePatient.insurance.coveragePercent}%)</p>
-              </div>
-              <div className="meta-field">
-                <label>Billing Status</label>
-                <p>{activePatient.insurance.deductibleMet ? 'Deductible Met' : 'Deductible Pending'}</p>
-              </div>
-            </div>
+            {isEditingDemographics ? (
+              <form onSubmit={handleSaveDemographics} style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Age</label>
+                    <input type="number" className="form-control" value={editAge} onChange={(e) => setEditAge(e.target.value)} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Contact Phone</label>
+                    <input type="text" className="form-control" value={editPhone} onChange={(e) => setEditPhone(e.target.value)} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Email</label>
+                    <input type="email" className="form-control" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Insurance Provider</label>
+                    <input type="text" className="form-control" value={editInsProvider} onChange={(e) => setEditInsProvider(e.target.value)} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Policy ID</label>
+                    <input type="text" className="form-control" value={editInsPolicy} onChange={(e) => setEditInsPolicy(e.target.value)} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Coverage %</label>
+                    <input type="number" className="form-control" value={editInsCoverage} onChange={(e) => setEditInsCoverage(e.target.value)} />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px', alignItems: 'center' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Medical Alerts (Comma-separated)</label>
+                    <input type="text" className="form-control" value={editAlerts} onChange={(e) => setEditAlerts(e.target.value)} />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '100%', paddingTop: '16px' }}>
+                    <input type="checkbox" id="editInsDeductible" checked={editInsDeductible} onChange={(e) => setEditInsDeductible(e.target.checked)} style={{ width: '16px', height: '16px', cursor: 'pointer' }} />
+                    <label htmlFor="editInsDeductible" style={{ fontSize: '13px', cursor: 'pointer', userSelect: 'none' }}>Deductible Met</label>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
+                  <button type="button" className="btn btn-secondary" onClick={() => setIsEditingDemographics(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary">Save Patient Details</button>
+                </div>
+              </form>
+            ) : (
+              <>
+                {/* Meta Grid */}
+                <div className="patient-meta-grid">
+                  <div className="meta-field">
+                    <label>Age / Gender</label>
+                    <p>{activePatient.age} years / {activePatient.gender}</p>
+                  </div>
+                  <div className="meta-field">
+                    <label>Contact Phone</label>
+                    <p>{activePatient.phone}</p>
+                  </div>
+                  <div className="meta-field">
+                    <label>Insurance Provider</label>
+                    <p>{activePatient.insurance.provider} ({activePatient.insurance.coveragePercent}%)</p>
+                  </div>
+                  <div className="meta-field">
+                    <label>Billing Status</label>
+                    <p>{activePatient.insurance.deductibleMet ? 'Deductible Met' : 'Deductible Pending'}</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', marginTop: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  {userRole === 'receptionist' && (
+                    <>
+                      <button 
+                        className="btn btn-secondary" 
+                        onClick={() => setIsEditingDemographics(true)}
+                        style={{ padding: '6px 14px', fontSize: '12px' }}
+                      >
+                        ✏️ Edit Demographics & Insurance
+                      </button>
+                      <button 
+                        className="btn btn-primary" 
+                        onClick={() => onCheckInPatient(activePatient.id)}
+                        style={{ padding: '6px 14px', fontSize: '12px' }}
+                      >
+                        ⚡ Check In for Visit
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           {/* EHR Tabs Bar */}
@@ -228,6 +371,7 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
               <DentalChart 
                 patient={activePatient} 
                 onChangeChart={onChangeChart}
+                userRole={userRole}
               />
             )}
 
@@ -356,22 +500,28 @@ export default function PatientEHR({ patients, activePatientId, onSelectPatient,
                 <h3>Clinical Logs & Visit History</h3>
                 
                 {/* Add new Visit Note */}
-                <form onSubmit={handleAddNoteSubmit} className="mt-md" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '20px', marginBottom: '20px' }}>
-                  <div className="form-group">
-                    <label>Log New Visit Clinical Note</label>
-                    <textarea 
-                      className="form-control" 
-                      rows="3" 
-                      placeholder="Input clinical findings, treatment completed, prescriptions, or post-op instructions..."
-                      value={newNote}
-                      onChange={(e) => setNewNote(e.target.value)}
-                      required
-                    ></textarea>
+                {userRole === 'doctor' ? (
+                  <form onSubmit={handleAddNoteSubmit} className="mt-md" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '20px', marginBottom: '20px' }}>
+                    <div className="form-group">
+                      <label>Log New Visit Clinical Note</label>
+                      <textarea 
+                        className="form-control" 
+                        rows="3" 
+                        placeholder="Input clinical findings, treatment completed, prescriptions, or post-op instructions..."
+                        value={newNote}
+                        onChange={(e) => setNewNote(e.target.value)}
+                        required
+                      ></textarea>
+                    </div>
+                    <button type="submit" className="btn btn-primary">
+                      Append Clinical Log
+                    </button>
+                  </form>
+                ) : (
+                  <div style={{ backgroundColor: 'var(--primary-teal-light)', padding: '16px', borderRadius: '10px', fontSize: '13px', marginBottom: '20px', border: '1px dashed var(--border-color)' }}>
+                    🔒 <strong>Clinical Logging Restricted:</strong> Only the Doctor role is authorized to document clinical visit notes.
                   </div>
-                  <button type="submit" className="btn btn-primary">
-                    Append Clinical Log
-                  </button>
-                </form>
+                )}
 
                 {/* Listing historical notes */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

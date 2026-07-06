@@ -532,6 +532,27 @@ a {
   border: 1px solid var(--border-color);
 }
 
+.dental-chart-arch-container {
+  position: relative;
+  width: 600px;
+  height: 700px;
+  margin: 20px auto;
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.dental-chart-arch-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 .jaw-row {
   display: flex;
   justify-content: center;
@@ -549,28 +570,57 @@ a {
   cursor: pointer;
   position: relative;
   transition: var(--transition-fast);
-  width: 45px;
+  width: 60px;
 }
 
 .tooth-item:hover {
-  transform: scale(1.1);
-}
-
-.tooth-item.selected {
-  filter: drop-shadow(0 0 6px var(--primary-teal));
+  transform: scale(1.08);
 }
 
 .tooth-svg-wrapper {
-  width: 40px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
+  transition: all 0.2s ease;
+  padding: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.tooth-svg-wrapper svg {
+  width: 82%;
+  height: 82%;
+  transition: transform 0.2s ease;
+}
+
+.tooth-item:hover .tooth-svg-wrapper {
+  border-color: var(--primary-teal-light);
+  background-color: var(--bg-input);
+}
+
+.tooth-item.selected .tooth-svg-wrapper {
+  border-color: var(--primary-teal);
+  box-shadow: 0 0 10px rgba(13, 148, 136, 0.4);
+  background-color: var(--primary-teal-light);
+}
+
+.tooth-item.missing .tooth-svg-wrapper {
+  border-style: dashed;
+  border-color: var(--text-muted);
+  opacity: 0.4;
+  background-color: transparent;
 }
 
 .tooth-label {
   font-size: 11px;
   font-weight: 700;
   color: var(--text-secondary);
-  margin-top: 4px;
+  margin-top: 6px;
   text-align: center;
 }
 
@@ -783,6 +833,9 @@ a {
 }
 
 .patient-list-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 12px;
   border-radius: 10px;
   border: 1px solid var(--border-color);
@@ -810,6 +863,53 @@ a {
   font-size: 12px;
   color: var(--text-secondary);
   margin-top: 4px;
+}
+
+/* Patient circular teeth avatar styling */
+.patient-teeth-avatar-container {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--primary-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-app);
+  box-shadow: 0 0 12px rgba(13, 148, 136, 0.2);
+  flex-shrink: 0;
+}
+
+.patient-teeth-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.patient-list-teeth-avatar-container {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-app);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+.patient-list-card:hover .patient-list-teeth-avatar-container,
+.patient-list-card.active .patient-list-teeth-avatar-container {
+  border-color: var(--primary-teal);
+  box-shadow: 0 0 8px rgba(13, 148, 136, 0.35);
+}
+
+.patient-list-teeth-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .ehr-main-view {

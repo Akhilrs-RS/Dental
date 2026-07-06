@@ -1,14 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import { ADA_CODES } from '../data/mockData';
 
-export default function TreatmentPlanner({ patients, activePatientId, onUpdatePatient, onSelectPatient }) {
+export default function TreatmentPlanner({ 
+  userRole, 
+  patients, 
+  appointments, 
+  activePatientId, 
+  onUpdatePatient, 
+  onSelectPatient, 
+  onAddAppointment, 
+  onSendWhatsApp 
+}) {
   const [selectedCode, setSelectedCode] = useState(ADA_CODES[0].code);
   const [selectedTooth, setSelectedTooth] = useState('General');
   const [showReceipt, setShowReceipt] = useState(false);
   const [claimStatus, setClaimStatus] = useState('idle'); // idle, submitting, approved
   const [claimResponse, setClaimResponse] = useState(null);
 
+  // Doctor Next Appointment Scheduler States
+  const [nextDate, setNextDate] = useState('');
+  const [nextTime, setNextTime] = useState('09:00');
+  const [nextRoom, setNextRoom] = useState('Operatory A');
+  const [nextProcedure, setNextProcedure] = useState('');
+
   const activePatient = patients.find(p => p.id === activePatientId) || patients[0];
+
+  useEffect(() => {
+    const oneWeek = new Date();
+    oneWeek.setDate(oneWeek.getDate() + 7);
+    setNextDate(oneWeek.toISOString().split('T')[0]);
+  }, []);
+
+  const handleScheduleNextVisit = (e) => {
+    e.preventDefault();
+    if (!nextDate || !nextProcedure.trim()) return;
+
+    const newApt = {
+      id: 'apt-' + Date.now(),
+      patientId: activePatient.id,
+      patientName: activePatient.name,
+      time: nextTime,
+      duration: 60,
+      room: nextRoom,
+      dentist: nextRoom === 'Operatory B' ? 'Dr. James Aris' : 'Dr. Sarah Carter',
+      type: nextProcedure,
+      status: 'scheduled',
+      date: nextDate
+    };
+
+    onAddAppointment(newApt);
+
+    onSendWhatsApp({
+      patientName: activePatient.name,
+      phone: activePatient.phone,
+      date: nextDate,
+      time: nextTime,
+      room: nextRoom,
+      dentist: nextRoom === 'Operatory B' ? 'Dr. James Aris' : 'Dr. Sarah Carter'
+    });
+
+    setNextProcedure('');
+  };
 
   // Initialize a default treatment plan if none exists
   useEffect(() => {
@@ -146,43 +198,52 @@ export default function TreatmentPlanner({ patients, activePatientId, onUpdatePa
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           {/* Procedure Adder Form */}
-          <div className="card">
-            <h2>Add Procedure to Treatment Plan</h2>
-            <form onSubmit={handleAddProcedure} className="mt-md" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '16px', alignItems: 'end' }}>
-              <div className="form-group">
-                <label>Procedure Code (ADA)</label>
-                <select 
-                  className="form-control"
-                  value={selectedCode}
-                  onChange={(e) => setSelectedCode(e.target.value)}
-                >
-                  {ADA_CODES.map(ada => (
-                    <option key={ada.code} value={ada.code}>
-                      [{ada.code}] {ada.name} - ₹{ada.price}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          {userRole === 'doctor' ? (
+            <div className="card">
+              <h2>Add Procedure to Treatment Plan</h2>
+              <form onSubmit={handleAddProcedure} className="mt-md" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '16px', alignItems: 'end' }}>
+                <div className="form-group">
+                  <label>Procedure Code (ADA)</label>
+                  <select 
+                    className="form-control"
+                    value={selectedCode}
+                    onChange={(e) => setSelectedCode(e.target.value)}
+                  >
+                    {ADA_CODES.map(ada => (
+                      <option key={ada.code} value={ada.code}>
+                        [{ada.code}] {ada.name} - ₹{ada.price}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div className="form-group">
-                <label>Tooth # / Area</label>
-                <select 
-                  className="form-control"
-                  value={selectedTooth}
-                  onChange={(e) => setSelectedTooth(e.target.value)}
-                >
-                  <option value="General">General / Full Mouth</option>
-                  {Array.from({ length: 32 }, (_, i) => i + 1).map(n => (
-                    <option key={n} value={n.toString()}>Tooth #{n}</option>
-                  ))}
-                </select>
-              </div>
+                <div className="form-group">
+                  <label>Tooth # / Area</label>
+                  <select 
+                    className="form-control"
+                    value={selectedTooth}
+                    onChange={(e) => setSelectedTooth(e.target.value)}
+                  >
+                    <option value="General">General / Full Mouth</option>
+                    {Array.from({ length: 32 }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={n.toString()}>Tooth #{n}</option>
+                    ))}
+                  </select>
+                </div>
 
-              <button type="submit" className="btn btn-primary" style={{ height: '42px', marginBottom: '16px' }}>
-                + Add Procedure
-              </button>
-            </form>
-          </div>
+                <button type="submit" className="btn btn-primary" style={{ height: '42px', marginBottom: '16px' }}>
+                  + Add Procedure
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="card" style={{ borderLeft: '4px solid var(--secondary-blue)' }}>
+              <h2>Clinical Planner Panel Locked</h2>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                🔒 <strong>Clinical Restrictions:</strong> Receptionists are authorized to view invoice estimates and print receipts. Adding procedures or completing treatments is restricted to the Doctor role.
+              </p>
+            </div>
+          )}
 
           {/* Active Treatment Plan Checklist */}
           <div className="card">
@@ -210,10 +271,11 @@ export default function TreatmentPlanner({ patients, activePatientId, onUpdatePa
                         <td style={{ textAlign: 'center' }}>
                           <input 
                             type="checkbox"
-                            style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                            style={{ width: '16px', height: '16px', cursor: userRole === 'doctor' ? 'pointer' : 'not-allowed' }}
                             checked={item.status === 'completed'}
-                            onChange={() => handleToggleCompleted(item.id)}
-                            title="Toggle Completed"
+                            onChange={() => userRole === 'doctor' && handleToggleCompleted(item.id)}
+                            disabled={userRole !== 'doctor'}
+                            title={userRole === 'doctor' ? "Toggle Completed" : "Doctor access only"}
                           />
                         </td>
                         <td>
@@ -225,13 +287,17 @@ export default function TreatmentPlanner({ patients, activePatientId, onUpdatePa
                         <td>{item.name}</td>
                         <td style={{ textAlign: 'right', fontWeight: 600 }}>₹{item.price.toFixed(2)}</td>
                         <td style={{ textAlign: 'center' }}>
-                          <button 
-                            className="btn btn-secondary" 
-                            style={{ padding: '4px 8px', fontSize: '11px', color: 'var(--color-fracture)' }}
-                            onClick={() => handleRemoveProcedure(item.id)}
-                          >
-                            Remove
-                          </button>
+                          {userRole === 'doctor' ? (
+                            <button 
+                              className="btn btn-secondary" 
+                              style={{ padding: '4px 8px', fontSize: '11px', color: 'var(--color-fracture)' }}
+                              onClick={() => handleRemoveProcedure(item.id)}
+                            >
+                              Remove
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Locked</span>
+                          )}
                         </td>
                       </tr>
                     ))
@@ -300,14 +366,16 @@ export default function TreatmentPlanner({ patients, activePatientId, onUpdatePa
                     Generate Invoice Receipt
                   </button>
 
-                  <button 
-                    className="btn btn-secondary"
-                    style={{ width: '100%', borderColor: 'var(--primary-teal)', color: 'var(--primary-teal)' }}
-                    onClick={handleSimulateClaim}
-                    disabled={claimStatus === 'submitting'}
-                  >
-                    {claimStatus === 'submitting' ? 'Submitting Claim...' : 'File Electronic Claim'}
-                  </button>
+                  {userRole === 'doctor' && (
+                    <button 
+                      className="btn btn-secondary"
+                      style={{ width: '100%', borderColor: 'var(--primary-teal)', color: 'var(--primary-teal)' }}
+                      onClick={handleSimulateClaim}
+                      disabled={claimStatus === 'submitting'}
+                    >
+                      {claimStatus === 'submitting' ? 'Submitting Claim...' : 'File Electronic Claim'}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -359,6 +427,77 @@ export default function TreatmentPlanner({ patients, activePatientId, onUpdatePa
                   </p>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Doctor Next Appointment Panel */}
+          {userRole === 'doctor' && (
+            <div className="card" style={{ borderLeft: '4px solid var(--primary-teal)' }}>
+              <h2>Schedule Next Appointment</h2>
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '14px' }}>
+                Set the next clinical appointment for <strong>{activePatient.name}</strong> and dispatch a WhatsApp status notification.
+              </p>
+              
+              <form onSubmit={handleScheduleNextVisit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Next Visit Date</label>
+                  <input 
+                    type="date" 
+                    className="form-control" 
+                    value={nextDate} 
+                    onChange={(e) => setNextDate(e.target.value)} 
+                    required 
+                  />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Time Slot</label>
+                    <select 
+                      className="form-control" 
+                      value={nextTime} 
+                      onChange={(e) => setNextTime(e.target.value)}
+                    >
+                      <option value="08:00">08:00 AM</option>
+                      <option value="09:00">09:00 AM</option>
+                      <option value="10:00">10:00 AM</option>
+                      <option value="11:00">11:00 AM</option>
+                      <option value="13:00">01:00 PM</option>
+                      <option value="14:00">02:00 PM</option>
+                      <option value="15:00">03:00 PM</option>
+                      <option value="16:00">04:00 PM</option>
+                    </select>
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Operatory Room</label>
+                    <select 
+                      className="form-control" 
+                      value={nextRoom} 
+                      onChange={(e) => setNextRoom(e.target.value)}
+                    >
+                      <option value="Operatory A">Operatory A (Dr. Carter)</option>
+                      <option value="Operatory B">Operatory B (Dr. Aris)</option>
+                      <option value="Hygiene Room">Hygiene Room (Amy Miller)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Next Visit Procedure / Objective</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={nextProcedure} 
+                    onChange={(e) => setNextProcedure(e.target.value)} 
+                    placeholder="e.g. Tooth #3 Composite Filling" 
+                    required 
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-primary mt-sm" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <span>📱</span> Schedule & Send WhatsApp
+                </button>
+              </form>
             </div>
           )}
         </div>
