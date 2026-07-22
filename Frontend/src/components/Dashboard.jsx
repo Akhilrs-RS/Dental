@@ -9,9 +9,11 @@ export default function Dashboard({
   onRegisterPatient, 
   onViewScheduler, 
   onViewPatient,
-  onUpdateAppointment 
+  onUpdateAppointment,
+  analytics
 }) {
-  const { dailyRevenue, monthlyRevenue, occupancyRate, activePatients, procedureBreakdown, revenueHistory } = CLINIC_ANALYTICS;
+  const currentAnalytics = analytics || CLINIC_ANALYTICS;
+  const { dailyRevenue, monthlyRevenue, occupancyRate, activePatients, procedureBreakdown, revenueHistory } = currentAnalytics;
   const [searchTerm, setSearchTerm] = useState('');
 
   // Render SVG Area Chart for Revenue History

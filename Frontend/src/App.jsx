@@ -6,16 +6,70 @@ import PatientEHR from './components/PatientEHR';
 import TreatmentPlanner from './components/TreatmentPlanner';
 import RegisterPatientModal from './components/RegisterPatientModal';
 import WhatsAppSimulator from './components/WhatsAppSimulator';
+import LandingPage from './components/LandingPage';
+
+const API_BASE = 'http://localhost:5112/api';
 
 export default function App() {
-  const [patients, setPatients] = useState(INITIAL_PATIENTS);
-  const [appointments, setAppointments] = useState(INITIAL_APPOINTMENTS);
+  const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [activePatientId, setActivePatientId] = useState('P-101');
-  const [currentView, setCurrentView] = useState('dashboard');
+  const [currentView, setCurrentView] = useState('landing');
   const [themeMode, setThemeMode] = useState('dark');
   const [userRole, setUserRole] = useState('receptionist'); // receptionist vs doctor
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [whatsappNotification, setWhatsappNotification] = useState(null);
+
+  const fetchPatients = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/patients`);
+      if (res.ok) {
+        const data = await res.json();
+        setPatients(data);
+      } else {
+        setPatients(INITIAL_PATIENTS);
+      }
+    } catch (e) {
+      console.error("Failed to fetch patients, using mock data fallback:", e);
+      setPatients(INITIAL_PATIENTS);
+    }
+  };
+
+  const fetchAppointments = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/appointments`);
+      if (res.ok) {
+        const data = await res.json();
+        setAppointments(data);
+      } else {
+        setAppointments(INITIAL_APPOINTMENTS);
+      }
+    } catch (e) {
+      console.error("Failed to fetch appointments, using mock data fallback:", e);
+      setAppointments(INITIAL_APPOINTMENTS);
+    }
+  };
+
+  const fetchAnalytics = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/analytics`);
+      if (res.ok) {
+        const data = await res.json();
+        setAnalytics(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch live analytics:", e);
+    }
+  };
+
+  const fetchAllData = async () => {
+    await Promise.all([fetchPatients(), fetchAppointments(), fetchAnalytics()]);
+  };
+
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
   // Sync theme mode with body class
   useEffect(() => {
@@ -27,52 +81,151 @@ export default function App() {
   }, [themeMode]);
 
   // EHR: Update patient dental chart
-  const handleUpdateChart = (patientId, newChart) => {
-    setPatients(prevPatients =>
-      prevPatients.map(p => (p.id === patientId ? { ...p, chart: newChart } : p))
-    );
+  const handleUpdateChart = async (patientId, newChart) => {
+    try {
+      const res = await fetch(`${API_BASE}/patients/${patientId}/chart`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newChart)
+      });
+      if (res.ok) {
+        fetchPatients();
+        fetchAnalytics();
+      } else {
+        setPatients(prevPatients =>
+          prevPatients.map(p => (p.id === patientId ? { ...p, chart: newChart } : p))
+        );
+      }
+    } catch (e) {
+      console.error(e);
+      setPatients(prevPatients =>
+        prevPatients.map(p => (p.id === patientId ? { ...p, chart: newChart } : p))
+      );
+    }
   };
 
   // EHR: Append clinical notes
-  const handleAddVisitNote = (patientId, noteText) => {
-    const newNote = {
-      date: new Date().toISOString().split('T')[0],
-      notes: noteText
-    };
-    setPatients(prevPatients =>
-      prevPatients.map(p =>
-        p.id === patientId ? { ...p, visits: [newNote, ...(p.visits || [])] } : p
-      )
-    );
+  const handleAddVisitNote = async (patientId, noteText) => {
+    try {
+      const res = await fetch(`${API_BASE}/patients/${patientId}/visits`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: noteText })
+      });
+      if (res.ok) {
+        fetchPatients();
+      } else {
+        const newNote = {
+          date: new Date().toISOString().split('T')[0],
+          notes: noteText
+        };
+        setPatients(prevPatients =>
+          prevPatients.map(p =>
+            p.id === patientId ? { ...p, visits: [newNote, ...(p.visits || [])] } : p
+          )
+        );
+      }
+    } catch (e) {
+      console.error(e);
+      const newNote = {
+        date: new Date().toISOString().split('T')[0],
+        notes: noteText
+      };
+      setPatients(prevPatients =>
+        prevPatients.map(p =>
+          p.id === patientId ? { ...p, visits: [newNote, ...(p.visits || [])] } : p
+        )
+      );
+    }
   };
 
   // Planner: Update patient treatment plan
-  const handleUpdatePatient = (patientId, updatedPatient) => {
-    setPatients(prevPatients =>
-      prevPatients.map(p => (p.id === patientId ? updatedPatient : p))
-    );
+  const handleUpdatePatient = async (patientId, updatedPatient) => {
+    try {
+      const res = await fetch(`${API_BASE}/patients/${patientId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedPatient)
+      });
+      if (res.ok) {
+        fetchPatients();
+        fetchAnalytics();
+      } else {
+        setPatients(prevPatients =>
+          prevPatients.map(p => (p.id === patientId ? updatedPatient : p))
+        );
+      }
+    } catch (e) {
+      console.error(e);
+      setPatients(prevPatients =>
+        prevPatients.map(p => (p.id === patientId ? updatedPatient : p))
+      );
+    }
   };
 
   // Register Patient
-  const handleRegisterPatient = (newPatientData) => {
-    const nextIdNum = Math.max(...patients.map(p => parseInt(p.id.replace('P-', '')))) + 1;
-    const newPatient = {
-      id: `P-${nextIdNum}`,
-      ...newPatientData,
-      chart: {},
-      xrays: [],
-      visits: []
-    };
-    setPatients(prev => [...prev, newPatient]);
-    setActivePatientId(newPatient.id);
+  const handleRegisterPatient = async (newPatientData) => {
+    try {
+      const res = await fetch(`${API_BASE}/patients`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPatientData)
+      });
+      if (res.ok) {
+        const created = await res.json();
+        setActivePatientId(created.id);
+        fetchPatients();
+        fetchAnalytics();
+      } else {
+        const nextIdNum = Math.max(...patients.map(p => parseInt(p.id.replace('P-', '')))) + 1;
+        const newPatient = {
+          id: `P-${nextIdNum}`,
+          ...newPatientData,
+          chart: {},
+          xrays: [],
+          visits: []
+        };
+        setPatients(prev => [...prev, newPatient]);
+        setActivePatientId(newPatient.id);
+      }
+    } catch (e) {
+      console.error(e);
+      const nextIdNum = Math.max(...patients.map(p => parseInt(p.id.replace('P-', '')))) + 1;
+      const newPatient = {
+        id: `P-${nextIdNum}`,
+        ...newPatientData,
+        chart: {},
+        xrays: [],
+        visits: []
+      };
+      setPatients(prev => [...prev, newPatient]);
+      setActivePatientId(newPatient.id);
+    }
   };
 
   // Check In Patient
-  const handleCheckInPatient = (patientId, room = 'Operatory A', dentist = 'Dr. Sarah Carter', type = 'Walk-In Consultation') => {
+  const handleCheckInPatient = async (patientId, room = 'Operatory A', dentist = 'Dr. Sarah Carter', type = 'Walk-In Consultation') => {
     const today = new Date().toISOString().split('T')[0];
     const existingIdx = appointments.findIndex(apt => apt.patientId === patientId && apt.date === today);
     if (existingIdx !== -1) {
-      setAppointments(prev => prev.map((apt, idx) => idx === existingIdx ? { ...apt, status: 'checked-in' } : apt));
+      const existingApt = appointments[existingIdx];
+      const updated = { ...existingApt, status: 'checked-in' };
+      try {
+        const res = await fetch(`${API_BASE}/appointments/${existingApt.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updated)
+        });
+        if (res.ok) {
+          fetchAppointments();
+          fetchAnalytics();
+        } else {
+          setAppointments(prev => prev.map((apt, idx) => idx === existingIdx ? updated : apt));
+        }
+      } catch (e) {
+        console.error(e);
+        setAppointments(prev => prev.map((apt, idx) => idx === existingIdx ? updated : apt));
+      }
     } else {
       const patientObj = patients.find(p => p.id === patientId);
       const newApt = {
@@ -87,23 +240,81 @@ export default function App() {
         status: 'checked-in',
         date: today
       };
-      setAppointments(prev => [...prev, newApt]);
+      try {
+        const res = await fetch(`${API_BASE}/appointments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newApt)
+        });
+        if (res.ok) {
+          fetchAppointments();
+          fetchAnalytics();
+        } else {
+          setAppointments(prev => [...prev, newApt]);
+        }
+      } catch (e) {
+        console.error(e);
+        setAppointments(prev => [...prev, newApt]);
+      }
     }
   };
 
   // Scheduler: Add appointment
-  const handleAddAppointment = (newApt) => {
-    setAppointments(prev => [...prev, newApt]);
+  const handleAddAppointment = async (newApt) => {
+    try {
+      const res = await fetch(`${API_BASE}/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newApt)
+      });
+      if (res.ok) {
+        fetchAppointments();
+        fetchAnalytics();
+      } else {
+        setAppointments(prev => [...prev, newApt]);
+      }
+    } catch (e) {
+      console.error(e);
+      setAppointments(prev => [...prev, newApt]);
+    }
   };
 
   // Scheduler: Update appointment status/details
-  const handleUpdateAppointment = (aptId, updatedApt) => {
-    setAppointments(prev => prev.map(apt => (apt.id === aptId ? updatedApt : apt)));
+  const handleUpdateAppointment = async (aptId, updatedApt) => {
+    try {
+      const res = await fetch(`${API_BASE}/appointments/${aptId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedApt)
+      });
+      if (res.ok) {
+        fetchAppointments();
+        fetchAnalytics();
+      } else {
+        setAppointments(prev => prev.map(apt => (apt.id === aptId ? updatedApt : apt)));
+      }
+    } catch (e) {
+      console.error(e);
+      setAppointments(prev => prev.map(apt => (apt.id === aptId ? updatedApt : apt)));
+    }
   };
 
   // Scheduler: Delete/Cancel appointment
-  const handleDeleteAppointment = (aptId) => {
-    setAppointments(prev => prev.filter(apt => apt.id !== aptId));
+  const handleDeleteAppointment = async (aptId) => {
+    try {
+      const res = await fetch(`${API_BASE}/appointments/${aptId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        fetchAppointments();
+        fetchAnalytics();
+      } else {
+        setAppointments(prev => prev.filter(apt => apt.id !== aptId));
+      }
+    } catch (e) {
+      console.error(e);
+      setAppointments(prev => prev.filter(apt => apt.id !== aptId));
+    }
   };
 
   // Sidebar link details
@@ -131,6 +342,10 @@ export default function App() {
   };
 
   const header = getHeaderDetails();
+
+  if (currentView === 'landing') {
+    return <LandingPage onNavigate={setCurrentView} />;
+  }
 
   return (
     <div className="app-container">
@@ -198,9 +413,16 @@ export default function App() {
           <button 
             className="btn btn-secondary"
             onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
-            style={{ width: '100%', fontSize: '12px', padding: '8px 12px' }}
+            style={{ width: '100%', fontSize: '12px', padding: '8px 12px', marginBottom: '8px' }}
           >
             {themeMode === 'dark' ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode'}
+          </button>
+
+          <button 
+            className="sidebar-logout-btn"
+            onClick={() => setCurrentView('landing')}
+          >
+            <span>🚪 Return to Home</span>
           </button>
         </div>
       </aside>
@@ -237,6 +459,7 @@ export default function App() {
                 setCurrentView('patients');
               }}
               onUpdateAppointment={handleUpdateAppointment}
+              analytics={analytics}
             />
           )}
 
