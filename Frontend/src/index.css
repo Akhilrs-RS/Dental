@@ -2386,14 +2386,18 @@ a {
 
 .landing-about-image-col {
   position: relative;
-  border-radius: 20px;
+  width: 460px;
+  height: 460px;
+  border-radius: 30px;
   overflow: visible;
+  flex-shrink: 0;
 }
 
 .landing-about-img {
   width: 100%;
-  height: auto;
-  border-radius: 20px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 30px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -3162,6 +3166,13 @@ a {
   .landing-cta-banner {
     width: calc(100% - 80px);
     margin: 40px auto 60px auto;
+  }
+  .landing-about-image-col,
+  .landing-about-img {
+    width: 100% !important;
+    max-width: 460px;
+    height: auto !important;
+    aspect-ratio: 1/1;
   }
 }
 

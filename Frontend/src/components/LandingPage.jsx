@@ -11,6 +11,22 @@ import PickupRequestPage from './PickupRequestPage';
 import GalleryPage from './GalleryPage';
 import ContactPage from './ContactPage';
 
+// Carousel Images
+import img1 from '../assets/1.jpg';
+import img3 from '../assets/3.png';
+import img4 from '../assets/4.png';
+import img5 from '../assets/5.png';
+import img6 from '../assets/6.jpg';
+import img7 from '../assets/7.png';
+
+// Grid Card Images
+import img11 from '../assets/11.png';
+import img12 from '../assets/12.jpg';
+import img13 from '../assets/13.jpg';
+import img14 from '../assets/14.png';
+import img101 from '../assets/101.png';
+import img102 from '../assets/102.png';
+
 
 // SVG Icons
 const LogoIcon = () => (
@@ -283,77 +299,83 @@ export default function LandingPage({ onNavigate }) {
           </div>
 
           <div className="landing-about-carousel">
-            <div className="landing-carousel-item" onClick={() => setActiveModal('gallery')}>
-              <img src={dentalOperatory} className="landing-carousel-img" alt="Carousel 1" />
+            <div className="landing-carousel-item" onClick={() => setLandingView('gallery')}>
+              <img src={img1} className="landing-carousel-img" alt="Carousel 1" />
             </div>
-            <div className="landing-carousel-item" onClick={() => setActiveModal('gallery')}>
-              <img src={zirconiaRestorationImg} className="landing-carousel-img" alt="Carousel 2" />
+            <div className="landing-carousel-item" onClick={() => setLandingView('gallery')}>
+              <img src={img3} className="landing-carousel-img" alt="Carousel 2" />
             </div>
-            <div className="landing-carousel-item" onClick={() => setActiveModal('gallery')}>
-              <img src={millingMachineImg} className="landing-carousel-img" alt="Carousel 3" />
+            <div className="landing-carousel-item" onClick={() => setLandingView('gallery')}>
+              <img src={img4} className="landing-carousel-img" alt="Carousel 3" />
             </div>
-            <div className="landing-carousel-item" onClick={() => setActiveModal('gallery')}>
-              <img src={homeBg} className="landing-carousel-img" alt="Carousel 4" />
+            <div className="landing-carousel-item" onClick={() => setLandingView('gallery')}>
+              <img src={img5} className="landing-carousel-img" alt="Carousel 4" />
             </div>
-            <div className="landing-carousel-item" onClick={() => setActiveModal('gallery')}>
-              <img src={teethProfileImg} className="landing-carousel-img" alt="Carousel 5" />
+            <div className="landing-carousel-item" onClick={() => setLandingView('gallery')}>
+              <img src={img6} className="landing-carousel-img" alt="Carousel 5" />
+            </div>
+            <div className="landing-carousel-item" onClick={() => setLandingView('gallery')}>
+              <img src={img7} className="landing-carousel-img" alt="Carousel 6" />
             </div>
           </div>
         </section>
 
-        {/* Section 2: Product Restorations Grid */}
+        {/* Section 2: Restoration Services Grid */}
         <section className="landing-products-section">
           <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
-            <span className="landing-section-tag">OUR PRODUCTS</span>
-            <h2 className="landing-section-title" style={{ marginTop: '12px' }}>RESTORATION SOLUTIONS, ENGINEERED END-TO-END</h2>
+            <span className="landing-section-tag" style={{ color: '#dda73c' }}>Our Services</span>
+            <h2 className="landing-section-title" style={{ marginTop: '12px', textTransform: 'uppercase' }}>
+              RESTORATION SERVICES,<br />
+              ENGINEERED END TO END
+            </h2>
           </div>
           
           <div className="landing-products-grid">
-            <div className="landing-product-card" onClick={() => setActiveModal('products')}>
-              <img src={zirconiaRestorationImg} className="landing-product-card-img" alt="Zirconia Restorations" />
+            <div className="landing-product-card" onClick={() => setLandingView('products')}>
+              <img src={img11} className="landing-product-card-img" alt="Zirconia Restorations" />
               <div className="landing-product-card-content">
                 <h3 className="landing-product-card-title">Zirconia Restorations</h3>
-                <p className="landing-product-card-desc">Monolithic or micro-layered. Ultra-high strength crowns and bridges with multi-layered translucency.</p>
+                <p className="landing-product-card-desc">High-strength monolithic and layered zirconia for crowns and bridges, blending durability with lifelike translucency.</p>
               </div>
             </div>
 
-            <div className="landing-product-card" onClick={() => setActiveModal('products')}>
-              <img src={millingMachineImg} className="landing-product-card-img" alt="Implant Prosthetics" />
+            <div className="landing-product-card" onClick={() => setLandingView('products')}>
+              <img src={img12} className="landing-product-card-img" alt="Implant Prosthetics" />
               <div className="landing-product-card-content">
                 <h3 className="landing-product-card-title">Implant Prosthetics</h3>
-                <p className="landing-product-card-desc">Custom titanium and hybrid abutments. Precise emergence profiles for all major implant systems.</p>
+                <p className="landing-product-card-desc">Screw-retained and cement-retained implant restorations, with custom abutments and full-arch solutions.</p>
               </div>
             </div>
 
-            <div className="landing-product-card" onClick={() => setActiveModal('products')}>
-              <img src={teethProfileImg} className="landing-product-card-img" alt="Digital Orthodontics" />
+            <div className="landing-product-card" onClick={() => setLandingView('products')}>
+              <img src={img13} className="landing-product-card-img" alt="Digital Impression Processing" />
               <div className="landing-product-card-content">
-                <h3 className="landing-product-card-title">Digital Orthodontics & Splints</h3>
-                <p className="landing-product-card-desc">Biocompatible surgical guides, splints, and custom aligner models for precise setups.</p>
+                <h3 className="landing-product-card-title">Digital Impression Processing</h3>
+                <p className="landing-product-card-desc">Intraoral scan import, alignment, and model generation for fully digital workflows.</p>
               </div>
             </div>
 
-            <div className="landing-product-card" onClick={() => setActiveModal('products')}>
-              <img src={zirconiaRestorationImg} className="landing-product-card-img" alt="IPS e.max" />
+            <div className="landing-product-card" onClick={() => setLandingView('products')}>
+              <img src={img14} className="landing-product-card-img" alt="Zirconia Restorations" />
               <div className="landing-product-card-content">
-                <h3 className="landing-product-card-title">IPS e.max Restorations</h3>
-                <p className="landing-product-card-desc">Lithium disilicate crowns, veneers, and onlays for unparalleled anterior aesthetics.</p>
+                <h3 className="landing-product-card-title">Zirconia Restorations</h3>
+                <p className="landing-product-card-desc">High-strength monolithic and layered zirconia for crowns and bridges, blending durability with lifelike translucency.</p>
               </div>
             </div>
 
-            <div className="landing-product-card" onClick={() => setActiveModal('products')}>
-              <img src={homeBg} className="landing-product-card-img" alt="Digital Smile Design" />
+            <div className="landing-product-card" onClick={() => setLandingView('products')}>
+              <img src={img101} className="landing-product-card-img" alt="Digital Smile Design" />
               <div className="landing-product-card-content">
                 <h3 className="landing-product-card-title">Digital Smile Design</h3>
-                <p className="landing-product-card-desc">Custom diagnostics and virtual wax-ups to plan full mouth cosmetic makeovers.</p>
+                <p className="landing-product-card-desc">Aesthetic smile planning with digital prepresses, facial analysis and tooth proportion design.</p>
               </div>
             </div>
 
-            <div className="landing-product-card" onClick={() => setActiveModal('products')}>
-              <img src={dentalOperatory} className="landing-product-card-img" alt="CAD/CAM Services" />
+            <div className="landing-product-card" onClick={() => setLandingView('products')}>
+              <img src={img102} className="landing-product-card-img" alt="CAD & CAM Services" />
               <div className="landing-product-card-content">
-                <h3 className="landing-product-card-title">CAD/CAM Services</h3>
-                <p className="landing-product-card-desc">Send us your raw digital scan files and receive mill-ready CAD designs in return.</p>
+                <h3 className="landing-product-card-title">CAD & CAM Services</h3>
+                <p className="landing-product-card-desc">Digital crown and bridge design using advanced CAD software with margin and clearance verification.</p>
               </div>
             </div>
           </div>
