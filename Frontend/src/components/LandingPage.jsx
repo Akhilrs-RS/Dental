@@ -5,6 +5,12 @@ import dentalOperatory from '../assets/dental_operatory.png';
 import zirconiaRestorationImg from '../assets/zirconia_restoration.png';
 import millingMachineImg from '../assets/milling_machine.png';
 import teethProfileImg from '../assets/teeth_profile.png';
+import AboutPage from './AboutPage';
+import ProductsPage from './ProductsPage';
+import PickupRequestPage from './PickupRequestPage';
+import GalleryPage from './GalleryPage';
+import ContactPage from './ContactPage';
+
 
 // SVG Icons
 const LogoIcon = () => (
@@ -86,6 +92,7 @@ export default function LandingPage({ onNavigate }) {
   const [activeFaqIndex, setActiveFaqIndex] = useState(0);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [trackingStageIndex, setTrackingStageIndex] = useState(6);
+  const [landingView, setLandingView] = useState('home');
 
   const handlePickupSubmit = (e) => {
     e.preventDefault();
@@ -96,65 +103,71 @@ export default function LandingPage({ onNavigate }) {
     }, 3000);
   };
 
+  const renderHeader = () => (
+    <header className="landing-header" style={{ position: 'relative', width: '100%', padding: '24px 0', borderBottom: landingView !== 'home' ? '1px solid rgba(255,255,255,0.06)' : 'none', zIndex: 10 }}>
+      <nav className="landing-navbar">
+        <div className="landing-logo" onClick={() => setLandingView('home')} style={{ cursor: 'pointer' }}>
+          <LogoIcon />
+        </div>
+
+        <div className="landing-nav-pill">
+          <span className={`landing-nav-link ${landingView === 'about' ? 'active' : ''}`} onClick={() => setLandingView('about')}>About</span>
+          <span className="landing-nav-link" onClick={() => setActiveModal('services')}>Services</span>
+          <span className={`landing-nav-link ${landingView === 'products' ? 'active' : ''}`} onClick={() => setLandingView('products')}>Products</span>
+          <span className={`landing-nav-link ${landingView === 'pickup' ? 'active' : ''}`} onClick={() => setLandingView('pickup')}>Pickup Request</span>
+          <span className={`landing-nav-link ${landingView === 'gallery' ? 'active' : ''}`} onClick={() => setLandingView('gallery')}>Gallery</span>
+          <span className={`landing-nav-link ${landingView === 'contact' ? 'active' : ''}`} onClick={() => setLandingView('contact')}>Contact</span>
+        </div>
+
+        <button className="landing-login-btn" onClick={() => onNavigate('dashboard')}>
+          <span>Login</span>
+          <div className="landing-login-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </button>
+      </nav>
+    </header>
+  );
+
   return (
     <div className="landing-page-wrapper">
       <div className="landing-container">
         
-        {/* Hero Section */}
-        <div 
-          className="landing-hero-section" 
-          style={{ backgroundImage: `url(${homeBg})` }}
-        >
-          <div className="landing-hero-overlay"></div>
-          
-          {/* Header */}
-          <header className="landing-header">
-            <nav className="landing-navbar">
-              <div className="landing-logo" onClick={() => onNavigate('dashboard')}>
-                <LogoIcon />
-              </div>
-
-              <div className="landing-nav-pill">
-                <span className="landing-nav-link" onClick={() => setActiveModal('about')}>About</span>
-                <span className="landing-nav-link" onClick={() => setActiveModal('services')}>Services</span>
-                <span className="landing-nav-link" onClick={() => setActiveModal('products')}>Products</span>
-                <span className="landing-nav-link" onClick={() => setActiveModal('pickup')}>Pickup Request</span>
-                <span className="landing-nav-link" onClick={() => setActiveModal('gallery')}>Gallery</span>
-                <span className="landing-nav-link" onClick={() => setActiveModal('contact')}>Contact</span>
-              </div>
-
-              <button className="landing-login-btn" onClick={() => onNavigate('dashboard')}>
-                <span>Login</span>
-                <div className="landing-login-arrow">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </div>
-              </button>
-            </nav>
-          </header>
-
-          {/* Hero Content */}
-          <div className="landing-hero-content">
-            <div className="landing-hero-left">
-              <span className="landing-subtitle">Digital Dental Laboratory</span>
-              <h1 className="landing-title">
-                Precision<br />
-                Restorations.<br />
-                <span className="gold-text">Connected<br /></span>
-                <span className="gold-text">Workflows.</span>
-              </h1>
+        {landingView === 'home' ? (
+          <>
+            {/* Hero Section */}
+            <div 
+              className="landing-hero-section" 
+              style={{ backgroundImage: `url(${homeBg})` }}
+            >
+              <div className="landing-hero-overlay"></div>
               
-              <div className="landing-actions">
-                <button className="btn-gold" onClick={() => onNavigate('scheduler')}>
-                  Book a Lab Case
-                </button>
-                <button className="btn-outline-white" onClick={() => setActiveModal('products')}>
-                  Explore Our Products
-                </button>
-              </div>
-            </div>
+              {/* Header */}
+              {renderHeader()}
+
+              {/* Hero Content */}
+              <div className="landing-hero-content">
+                <div className="landing-hero-left">
+                  <span className="landing-subtitle">Digital Dental Laboratory</span>
+                  <h1 className="landing-title">
+                    Precision<br />
+                    Restorations.<br />
+                    <span className="gold-text">Connected<br /></span>
+                    <span className="gold-text">Workflows.</span>
+                  </h1>
+                  
+                  <div className="landing-actions">
+                    <button className="btn-gold" onClick={() => onNavigate('scheduler')}>
+                      Book a Lab Case
+                    </button>
+                    <button className="btn-outline-white" onClick={() => setLandingView('products')}>
+                      Explore Our Products
+                    </button>
+                  </div>
+                </div>
 
             <div className="landing-hero-right">
               {/* Live Case Card */}
@@ -214,7 +227,7 @@ export default function LandingPage({ onNavigate }) {
             <span>3D Scan Viewer</span>
           </div>
 
-          <div className="landing-footer-item" onClick={() => setActiveModal('pickup')}>
+          <div className="landing-footer-item" onClick={() => setLandingView('pickup')}>
             <div className="landing-footer-icon">
               <TruckIcon />
             </div>
@@ -580,9 +593,40 @@ export default function LandingPage({ onNavigate }) {
             </button>
           </div>
         </section>
+        </>
+        ) : (
+          <>
+            {/* Subpage Header */}
+            <div style={{ background: '#03050a', padding: '0 80px', width: '100%', boxSizing: 'border-box' }}>
+              {renderHeader()}
+            </div>
+
+            {/* Subpages Routing */}
+            {landingView === 'about' && <AboutPage onNavigate={onNavigate} />}
+            {landingView === 'products' && <ProductsPage onNavigate={onNavigate} />}
+            {landingView === 'pickup' && <PickupRequestPage onNavigate={onNavigate} />}
+            {landingView === 'gallery' && <GalleryPage />}
+            {landingView === 'contact' && <ContactPage />}
+          </>
+        )}
 
         {/* J3 Main Footer */}
-        <Footer onNavigate={onNavigate} onOpenModal={setActiveModal} />
+        <Footer 
+          onNavigate={(view) => {
+            if (view === 'dashboard' || view === 'patients' || view === 'scheduler' || view === 'planner') {
+              onNavigate(view);
+            } else {
+              setLandingView(view);
+            }
+          }} 
+          onOpenModal={(modal) => {
+            if (modal === 'about' || modal === 'products' || modal === 'pickup' || modal === 'gallery' || modal === 'contact') {
+              setLandingView(modal);
+            } else {
+              setActiveModal(modal);
+            }
+          }} 
+        />
 
       </div>
 
