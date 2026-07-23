@@ -262,7 +262,7 @@ export default function LandingPage({ onNavigate }) {
               </div>
             </div>
             <div className="landing-about-info-col">
-              <span className="landing-section-tag" style={{ color: '#dda73c' }}>About J3 Dental Lab</span>
+              <span className="landing-section-tag" style={{ color: '#dda73c', textTransform: 'none' }}>About J3 Dental Lab</span>
               <h2 className="landing-section-title">BUILT FOR ACCURACY. DESIGNED FOR BETTER COLLABORATION.</h2>
               <p className="landing-section-desc">
                 J3 Dental Lab combines experienced dental technicians, digital workflows and advanced restoration technology to help clinics manage laboratory cases with greater clarity, speed and precision
@@ -323,7 +323,7 @@ export default function LandingPage({ onNavigate }) {
         {/* Section 2: Restoration Services Grid */}
         <section className="landing-products-section">
           <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
-            <span className="landing-section-tag" style={{ color: '#dda73c' }}>Our Services</span>
+            <span className="landing-section-tag" style={{ color: '#dda73c', textTransform: 'none' }}>Our Services</span>
             <h2 className="landing-section-title" style={{ marginTop: '12px', textTransform: 'uppercase' }}>
               RESTORATION SERVICES,<br />
               ENGINEERED END TO END
@@ -384,8 +384,11 @@ export default function LandingPage({ onNavigate }) {
         {/* Section 3: Case Tracking Section */}
         <section className="landing-tracking-section">
           <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
-            <span className="landing-section-tag">CASE TRACKING</span>
-            <h2 className="landing-section-title" style={{ marginTop: '12px' }}>FROM PRESCRIPTION TO DELIVERY, EVERY STAGE STAYS VISIBLE.</h2>
+            <span className="landing-section-tag" style={{ color: '#dda73c', textTransform: 'none' }}>Digital Workflow</span>
+            <h2 className="landing-section-title" style={{ marginTop: '12px' }}>
+              FROM PRESCRIPTION TO DELIVERY,<br />
+              EVERY STAGE STAYS VISIBLE.
+            </h2>
           </div>
 
           <div className="landing-timeline-container">
@@ -397,161 +400,260 @@ export default function LandingPage({ onNavigate }) {
               ></div>
 
               {[
-                "Order Received", "Model Prep", "CAD Design", "Milling/3D Print", 
-                "Ceramic/Finish", "Quality Control", "Labeling/Packaging", 
-                "On Courier", "Delivered"
-              ].map((stage, idx) => (
-                <div 
-                  key={stage} 
-                  className={`landing-timeline-step ${idx < trackingStageIndex ? 'completed' : ''} ${idx === trackingStageIndex ? 'active' : ''}`}
-                  onClick={() => setTrackingStageIndex(idx)}
-                >
-                  <div className="landing-timeline-dot"></div>
-                  <span className="landing-timeline-label">{stage}</span>
-                </div>
-              ))}
+                { name: "Order Placed", status: "Done" },
+                { name: "Pickup Request", status: "Done" },
+                { name: "Sample Collected", status: "Done" },
+                { name: "Received in Lab", status: "Done" },
+                { name: "Scanning", status: "Done" },
+                { name: "CAD Design", status: "Done" },
+                { name: "CAM Milling", status: "In progress" },
+                { name: "Sintering", status: "" },
+                { name: "Finishing", status: "" }
+              ].map((stage, idx) => {
+                let dotClass = "";
+                let dotContent = "";
+                
+                if (idx < 3) {
+                  dotClass = "completed-tick";
+                  dotContent = "✓";
+                } else if (idx < trackingStageIndex) {
+                  dotClass = "completed-solid";
+                  dotContent = "";
+                } else if (idx === trackingStageIndex) {
+                  dotClass = "active-number";
+                  dotContent = String(idx + 1);
+                } else {
+                  dotClass = "future-number";
+                  dotContent = String(idx + 1);
+                }
+                
+                const isCompleted = idx < trackingStageIndex;
+                const isActive = idx === trackingStageIndex;
+
+                return (
+                  <div 
+                    key={stage.name} 
+                    className={`landing-timeline-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}
+                    onClick={() => setTrackingStageIndex(idx)}
+                  >
+                    <div className={`landing-timeline-dot ${dotClass}`}>
+                      {dotContent}
+                    </div>
+                    <div className="landing-timeline-label">
+                      <span style={{ 
+                        display: 'block', 
+                        color: isActive ? '#dda73c' : (isCompleted ? '#ffffff' : '#94a3b8') 
+                      }}>
+                        {stage.name}
+                      </span>
+                      {stage.status && (
+                        <span style={{ 
+                          fontSize: '10px', 
+                          color: '#64748b', 
+                          display: 'block', 
+                          marginTop: '2px',
+                          textTransform: 'none',
+                          fontWeight: 'normal'
+                        }}>
+                          {stage.status}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="landing-tracking-stats">
               <div className="landing-track-stat-item">
-                <span className="landing-track-stat-val">5.4 Days</span>
-                <span className="landing-track-stat-lbl">Avg Turnaround Time</span>
+                <span className="landing-track-stat-val">5-7 days</span>
+                <span className="landing-track-stat-lbl">Avg. Turnaround</span>
               </div>
               <div className="landing-track-stat-item">
-                <span className="landing-track-stat-val">12,482</span>
-                <span className="landing-track-stat-lbl">Completed Cases</span>
+                <span className="landing-track-stat-val">15 tracked</span>
+                <span className="landing-track-stat-lbl">Avg. Turnaround</span>
               </div>
               <div className="landing-track-stat-item">
-                <span className="landing-track-stat-val">99.6%</span>
-                <span className="landing-track-stat-lbl">On-Time Delivery Rate</span>
+                <span className="landing-track-stat-val">48 hrs</span>
+                <span className="landing-track-stat-lbl">Urgent Option</span>
               </div>
               <div className="landing-track-stat-item">
-                <span className="landing-track-stat-val">Pre-stage</span>
-                <span className="landing-track-stat-lbl">Quality Checks Done</span>
+                <span className="landing-track-stat-val">Per Stage</span>
+                <span className="landing-track-stat-lbl">Quality checks</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Section 4: Courier Pickup Section */}
-        <section className="landing-courier-section">
-          <div className="landing-courier-grid">
-            <div>
-              <span className="landing-section-tag">COURIER PICKUP</span>
-              <h2 className="landing-section-title" style={{ marginTop: '12px', marginBottom: '24px' }}>
-                SCHEDULE LABORATORY PICKUPS WITHOUT MAKING A CALL
+        {/* Section 4: Interactive Tooth Chart Section */}
+        <section className="landing-toothchart-promo-section">
+          <div className="landing-toothchart-grid">
+            <div className="landing-toothchart-info">
+              <span className="landing-toothchart-tag">Interactive Dental Chart</span>
+              <h2 className="landing-toothchart-title">
+                SELECT TEETH WITH<br />
+                FDI PRECISION.
               </h2>
-              
-              <div className="landing-courier-timeline">
-                <div className="landing-courier-timeline-item active">
-                  <div className="landing-courier-timeline-dot"></div>
-                  <span className="landing-courier-timeline-lbl">Verified Request</span>
+              <p className="landing-toothchart-desc">
+                Our digital dental chart uses FDI tooth numbering for the full adult dentition. Select multiple teeth, assign restoration types, and apply configurations across selections — colour-coded for clarity.
+              </p>
+
+              <div className="landing-toothchart-legend">
+                <div className="legend-item">
+                  <span className="legend-color-box crown"></span>
+                  <span className="legend-label">Crown</span>
                 </div>
-                <div className="landing-courier-timeline-item active">
-                  <div className="landing-courier-timeline-dot"></div>
-                  <span className="landing-courier-timeline-lbl">Scheduled Pickup</span>
+                <div className="legend-item">
+                  <span className="legend-color-box bridge"></span>
+                  <span className="legend-label">Bridge</span>
                 </div>
-                <div className="landing-courier-timeline-item">
-                  <div className="landing-courier-timeline-dot"></div>
-                  <span className="landing-courier-timeline-lbl">In Transit to Lab</span>
+                <div className="legend-item">
+                  <span className="legend-color-box implant"></span>
+                  <span className="legend-label">Implant</span>
                 </div>
-                <div className="landing-courier-timeline-item">
-                  <div className="landing-courier-timeline-dot"></div>
-                  <span className="landing-courier-timeline-lbl">Received at Lab</span>
+                <div className="legend-item">
+                  <span className="legend-color-box veneer"></span>
+                  <span className="legend-label">Veneer</span>
                 </div>
-                <div className="landing-courier-timeline-item">
-                  <div className="landing-courier-timeline-dot"></div>
-                  <span className="landing-courier-timeline-lbl">Delivered Restoration</span>
+                <div className="legend-item">
+                  <span className="legend-color-box extraction"></span>
+                  <span className="legend-label">Extraction</span>
                 </div>
               </div>
 
-              <button className="btn-gold" style={{ marginTop: '36px' }} onClick={() => setActiveModal('pickup')}>
-                Request Courier Pickup →
+              <button className="btn-toothchart-gold" onClick={() => onNavigate('patients')}>
+                Try the Digital Prescription &rarr;
               </button>
             </div>
 
-            <div className="landing-courier-form-preview">
-              <div className="landing-courier-preview-title">
-                <span>Active Courier Order</span>
-                <span className="landing-courier-preview-badge">Courier Dispatched</span>
-              </div>
-              <div className="landing-courier-preview-grid">
-                <div className="landing-courier-preview-item">
-                  <span className="landing-courier-preview-lbl">Clinic Name</span>
-                  <span className="landing-courier-preview-val">{pickupForm.clinicName}</span>
+            <div className="landing-toothchart-card-col">
+              <div className="fdi-chart-card">
+                <div className="fdi-chart-card-header">
+                  <div>
+                    <span className="fdi-chart-subtitle">FDI TOOTH CHART</span>
+                    <h3 className="fdi-chart-title">Upper &amp; Lower Arch</h3>
+                  </div>
+                  <span className="fdi-chart-badge">6 SELECTED</span>
                 </div>
-                <div className="landing-courier-preview-item">
-                  <span className="landing-courier-preview-lbl">Case Number</span>
-                  <span className="landing-courier-preview-val">{pickupForm.caseNumber}</span>
+
+                <div className="fdi-chart-divider"></div>
+
+                <div className="fdi-arch-section">
+                  <span className="fdi-arch-label">UPPER ARCH</span>
+                  <div className="fdi-teeth-row">
+                    {['18','17','16','15','14','13','12','11','21','22','23','24','25','26','27','28'].map((tooth) => {
+                      let typeClass = '';
+                      if (tooth === '16') typeClass = 'crown';
+                      else if (tooth === '11' || tooth === '21') typeClass = 'implant';
+                      else if (tooth === '26') typeClass = 'bridge';
+
+                      return (
+                        <div key={tooth} className={`fdi-tooth-box ${typeClass}`}>
+                          {tooth}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="landing-courier-preview-item">
-                  <span className="landing-courier-preview-lbl">Courier Collection</span>
-                  <span className="landing-courier-preview-val">{pickupForm.materials}</span>
-                </div>
-                <div className="landing-courier-preview-item">
-                  <span className="landing-courier-preview-lbl">Date & Time</span>
-                  <span className="landing-courier-preview-val">{pickupForm.date} @ {pickupForm.time}</span>
+
+                <div className="fdi-arch-section" style={{ marginTop: '24px' }}>
+                  <span className="fdi-arch-label">LOWER ARCH</span>
+                  <div className="fdi-teeth-row">
+                    {['48','47','46','45','44','43','42','41','31','32','33','34','35','36','37','38'].map((tooth) => {
+                      let typeClass = '';
+                      if (tooth === '46') typeClass = 'extraction';
+                      else if (tooth === '36') typeClass = 'teal';
+
+                      return (
+                        <div key={tooth} className={`fdi-tooth-box ${typeClass}`}>
+                          {tooth}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Section 5: Interactive Tooth Chart Promo & Testimonials */}
-        <section className="landing-toothchart-promo-section">
-          <div className="landing-about-grid">
-            <div>
-              <span className="landing-section-tag">INTERACTIVE TOOTH CHART</span>
-              <h2 className="landing-section-title" style={{ marginTop: '12px' }}>SELECT THE RESTORATIONS WITH FULL PRECISION.</h2>
-            </div>
-            <div>
-              <p className="landing-section-desc" style={{ fontSize: '16px' }}>
-                Provide detailed instructions, choose shades, and trace pathology on our interactive 2D and 3D dental chart. Get exact visual representations of crowns, veneers, RCTs, and fillings before production starts.
+        {/* Section 5: Courier Pickup Section */}
+        <section className="landing-courier-section">
+          <div className="landing-courier-grid">
+            <div className="landing-courier-info">
+              <span className="landing-courier-tag-pickup">Pickup Service</span>
+              <h2 className="landing-courier-title-pickup">
+                SCHEDULE LABORATORY PICKUPS<br />
+                WITHOUT MAKING A CALL
+              </h2>
+              <p className="landing-courier-desc-pickup">
+                Request a driver to collect your cases directly from your clinic. Track every pickup from request to completion with OTP verification.
               </p>
-            </div>
-          </div>
 
-          <div className="landing-testimonial-box">
-            <span className="landing-testimonial-quote-icon">“</span>
-            
-            {testimonialIndex === 0 && (
-              <p className="landing-testimonial-text">
-                "The digital workflow and the tracking tools completely changed how we work with our lab. No more phone calls to clarify where a case is at or clarify instructions."
-              </p>
-            )}
-            {testimonialIndex === 1 && (
-              <p className="landing-testimonial-text">
-                "Accuracy is everything in implant prosthetics. J3 Dental Lab consistently delivers custom abutments and crowns that require zero chairside adjustments. Exceptional work!"
-              </p>
-            )}
-            {testimonialIndex === 2 && (
-              <p className="landing-testimonial-text">
-                "Our transition to 100% digital was made seamless by their support team. We upload intraoral scans directly from our scanner and receive beautiful restorations within days."
-              </p>
-            )}
-
-            <div className="landing-testimonial-author">
-              <span className="landing-testimonial-name">
-                {testimonialIndex === 0 ? "Dr. Sarah Carter" : testimonialIndex === 1 ? "Dr. Amit Patel" : "Dr. Lisa Vance"}
-              </span>
-              <span className="landing-testimonial-meta">
-                {testimonialIndex === 0 
-                  ? "Aura Dental Clinic, San Francisco, CA • Clinical Director" 
-                  : testimonialIndex === 1 
-                  ? "Apex Implant Center, Chicago, IL • Lead Implantologist" 
-                  : "Metro Dental Group, New York, NY • Managing Partner"
-                }
-              </span>
+              <div className="pickup-tracker-steps">
+                <div className="tracker-step active-check">
+                  <div className="tracker-dot">✓</div>
+                  <span className="tracker-lbl">Pending</span>
+                </div>
+                <div className="tracker-line active"></div>
+                <div className="tracker-step active-check">
+                  <div className="tracker-dot">✓</div>
+                  <span className="tracker-lbl">Accepted</span>
+                </div>
+                <div className="tracker-line active"></div>
+                <div className="tracker-step active-check">
+                  <div className="tracker-dot">✓</div>
+                  <span className="tracker-lbl">Driver<br />Assigned</span>
+                </div>
+                <div className="tracker-line"></div>
+                <div className="tracker-step">
+                  <div className="tracker-dot">4</div>
+                  <span className="tracker-lbl">Pick<br />up</span>
+                </div>
+                <div className="tracker-line"></div>
+                <div className="tracker-step">
+                  <div className="tracker-dot">5</div>
+                  <span className="tracker-lbl">Completed</span>
+                </div>
+              </div>
             </div>
 
-            <div className="landing-testimonial-dots">
-              {[0, 1, 2].map((idx) => (
-                <div 
-                  key={idx} 
-                  className={`landing-testimonial-dot ${testimonialIndex === idx ? 'active' : ''}`}
-                  onClick={() => setTestimonialIndex(idx)}
-                ></div>
-              ))}
+            <div className="landing-courier-card-col">
+              <div className="pickup-preview-card">
+                <div className="pickup-preview-header">
+                  <span className="pickup-preview-subtitle">PICKUP PREVIEW</span>
+                  <span className="pickup-preview-badge">Driver Assigned</span>
+                </div>
+
+                <div className="pickup-preview-divider"></div>
+
+                <div className="pickup-preview-grid">
+                  <div className="pickup-preview-item">
+                    <span className="pickup-lbl">PICKUP DATE</span>
+                    <span className="pickup-val">Jul 19, 2026</span>
+                  </div>
+                  <div className="pickup-preview-item">
+                    <span className="pickup-lbl">PREFERRED TIME</span>
+                    <span className="pickup-val">10:00 - 12:00 AM</span>
+                  </div>
+                  <div className="pickup-preview-item span-two">
+                    <span className="pickup-lbl">CLINIC ADDRESS</span>
+                    <span className="pickup-val">Smile Dental Clinic, RS Puram</span>
+                  </div>
+                  <div className="pickup-preview-item">
+                    <span className="pickup-lbl">CONTACT PERSON</span>
+                    <span className="pickup-val">Dr. Anitha Raman</span>
+                  </div>
+                  <div className="pickup-preview-item">
+                    <span className="pickup-lbl">NUMBER OF CASES</span>
+                    <span className="pickup-val">3</span>
+                  </div>
+                  <div className="pickup-preview-item span-two">
+                    <span className="pickup-lbl">SPECIAL NOTES</span>
+                    <span className="pickup-val">Includes impression model</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -560,15 +662,15 @@ export default function LandingPage({ onNavigate }) {
         <section className="landing-faq-section">
           <div className="landing-faq-grid">
             <div>
-              <span className="landing-section-tag">FAQ</span>
-              <h2 className="landing-section-title" style={{ marginTop: '12px', marginBottom: '16px' }}>
-                Common questions, answered.
+              <span className="landing-section-tag-faq">FAQ</span>
+              <h2 className="landing-faq-title">
+                Common questions,<br />answered.
               </h2>
-              <p className="landing-section-desc" style={{ marginBottom: '24px' }}>
-                Everything you need to know about getting started and integrating with J3 Dental Lab.
+              <p className="landing-faq-desc">
+                Everything from registration and scan uploads to pickup and payments.
               </p>
-              <button className="btn-outline-white" onClick={() => setActiveModal('contact')}>
-                View Help Center
+              <button className="btn-faq-pill" onClick={() => setActiveModal('contact')}>
+                View full FAQs
               </button>
             </div>
 
@@ -576,38 +678,49 @@ export default function LandingPage({ onNavigate }) {
               {[
                 {
                   q: "How do I register my clinic?",
-                  a: "You can create an account by clicking the 'Register' button in the top navbar. Once verified, you'll gain access to the doctor portal, allowing you to submit cases, track status, and manage billing."
+                  a: "Click 'Book a Lab Case' or 'Register Your Clinic', fill in your clinic details including GST number and address, verify your email with OTP, and our team will approve your account — usually within one business day."
                 },
                 {
-                  q: "What file formats do you support?",
-                  a: "We support all major open scanner formats including STL, PLY, and OBJ files. You can export scans directly from iTero, Trios, Medit, or Carestream and upload them."
+                  q: "What scan formats are supported?",
+                  a: "We support all major open intraoral scanner formats including STL, PLY, and OBJ. You can export scans directly from iTero, Trios, Medit, Carestream, and Sirona."
                 },
                 {
-                  q: "Is express courier service free?",
-                  a: "Yes, we provide complimentary express courier pickup and delivery for all regular contracted clinics within our service metropolitan zones."
+                  q: "Is pickup service available in my area?",
+                  a: "We offer complimentary door-to-door courier pickups across major metropolitan areas. You can schedule a pickup directly through your clinic portal."
                 },
                 {
-                  q: "Do you bundle physical shipments?",
-                  a: "Yes, to reduce environmental impact and shipping delays, we can bundle multiple cases completed in the same period into single courier batches."
+                  q: "Do you handle urgent and express cases?",
+                  a: "Yes! Express 48-hour turnarounds are available for selected crown & bridge restorations upon request during case submission."
                 },
                 {
-                  q: "How long does the average case take?",
-                  a: "Standard zirconia crowns take 5 business days from scan receipt. Implant cases take 7-10 business days depending on component sourcing. Rush options are available."
+                  q: "How can I view the price catalogue?",
+                  a: "Once your clinic account is registered and approved, full price catalogues for all restoration materials and prosthetics will be accessible in your portal."
                 }
-              ].map((faq, idx) => (
-                <div 
-                  key={idx} 
-                  className={`landing-faq-item ${activeFaqIndex === idx ? 'open' : ''}`}
-                >
-                  <button className="landing-faq-trigger" onClick={() => setActiveFaqIndex(activeFaqIndex === idx ? null : idx)}>
-                    <span>{faq.q}</span>
-                    <span className="landing-faq-arrow">»</span>
-                  </button>
-                  <div className="landing-faq-answer">
-                    <p>{faq.a}</p>
+              ].map((faq, idx) => {
+                const isOpen = activeFaqIndex === idx;
+                return (
+                  <div 
+                    key={idx} 
+                    className={`landing-faq-item ${isOpen ? 'open' : ''}`}
+                  >
+                    <button className="landing-faq-trigger" onClick={() => setActiveFaqIndex(isOpen ? null : idx)}>
+                      <span>{faq.q}</span>
+                      <div className="landing-faq-circle-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
+                          <circle cx="12" cy="12" r="9" stroke="currentColor" opacity="0.6" />
+                          <line x1="8" y1="12" x2="16" y2="12" />
+                          {!isOpen && <line x1="12" y1="8" x2="12" y2="16" />}
+                        </svg>
+                      </div>
+                    </button>
+                    {isOpen && (
+                      <div className="landing-faq-answer">
+                        <p>{faq.a}</p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -615,13 +728,13 @@ export default function LandingPage({ onNavigate }) {
         {/* Section 7: Gold Call-to-Action Banner */}
         <section className="landing-cta-banner">
           <h2 className="landing-cta-title">A clearer way to work with your dental laboratory.</h2>
-          <p className="landing-cta-subtitle">Submit cases, track stats, and schedule pickups in our intuitive portal.</p>
+          <p className="landing-cta-subtitle">Submit cases, share scans and track every production stage from one secure clinic portal.</p>
           <div className="landing-cta-buttons">
-            <button className="btn-black" onClick={() => onNavigate('scheduler')}>
-              Register Clinic
+            <button className="btn-black-pill" onClick={() => setLandingView('pickup')}>
+              Request a Pickup &rarr;
             </button>
-            <button className="btn-outline-dark" onClick={() => onNavigate('dashboard')}>
-              Access Portal
+            <button className="btn-outline-pill" onClick={() => setLandingView('contact')}>
+              Contact J3 Dental Club
             </button>
           </div>
         </section>
@@ -671,7 +784,7 @@ export default function LandingPage({ onNavigate }) {
             <button className="modal-close-btn" style={{ color: '#fff' }} onClick={() => setActiveModal(null)}>×</button>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <LogoIcon />
-              <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '12px', fontFamily: 'Playfair Display, serif' }}>About AuraDental Lab</h2>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginTop: '12px', fontFamily: "'DM Serif Display', serif" }}>About AuraDental Lab</h2>
               <p style={{ color: '#dda73c', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>Excellence in Digital Restorations</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '14px', lineHeight: '1.6', color: '#cbd5e1' }}>
@@ -702,7 +815,7 @@ export default function LandingPage({ onNavigate }) {
           <div className="modal-content" style={{ maxWidth: '700px', background: 'rgba(11, 15, 25, 0.95)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} onClick={(e) => e.stopPropagation()}>
             <button className="modal-close-btn" style={{ color: '#fff' }} onClick={() => setActiveModal(null)}>×</button>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'Playfair Display, serif' }}>Our Digital Lab Services</h2>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: "'DM Serif Display', serif" }}>Our Digital Lab Services</h2>
               <p style={{ color: '#dda73c', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>Predictable, Fast, & Beautiful</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', fontSize: '14px' }}>
@@ -733,7 +846,7 @@ export default function LandingPage({ onNavigate }) {
           <div className="modal-content" style={{ maxWidth: '800px', background: 'rgba(11, 15, 25, 0.95)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} onClick={(e) => e.stopPropagation()}>
             <button className="modal-close-btn" style={{ color: '#fff' }} onClick={() => setActiveModal(null)}>×</button>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'Playfair Display, serif' }}>Premium Restorative Products</h2>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: "'DM Serif Display', serif" }}>Premium Restorative Products</h2>
               <p style={{ color: '#dda73c', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>Individually Customized Restorations</p>
             </div>
             
@@ -778,7 +891,7 @@ export default function LandingPage({ onNavigate }) {
             
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
               <div style={{ fontSize: '32px', marginBottom: '8px' }}>🚚</div>
-              <h2 style={{ fontSize: '22px', fontWeight: 'bold', fontFamily: 'Playfair Display, serif' }}>Schedule a Clinic Pickup</h2>
+              <h2 style={{ fontSize: '22px', fontWeight: 'bold', fontFamily: "'DM Serif Display', serif" }}>Schedule a Clinic Pickup</h2>
               <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '4px' }}>Our courier will collect your physical models or silicone impressions.</p>
             </div>
 
@@ -995,7 +1108,7 @@ export default function LandingPage({ onNavigate }) {
           <div className="modal-content" style={{ maxWidth: '800px', background: 'rgba(11, 15, 25, 0.95)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} onClick={(e) => e.stopPropagation()}>
             <button className="modal-close-btn" style={{ color: '#fff' }} onClick={() => setActiveModal(null)}>×</button>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'Playfair Display, serif' }}>Lab Case Gallery</h2>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: "'DM Serif Display', serif" }}>Lab Case Gallery</h2>
               <p style={{ color: '#dda73c', fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', marginTop: '4px' }}>Our Finished Restoration Cases</p>
             </div>
             
@@ -1026,7 +1139,7 @@ export default function LandingPage({ onNavigate }) {
           <div className="modal-content" style={{ maxWidth: '500px', background: 'rgba(11, 15, 25, 0.95)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '30px' }} onClick={(e) => e.stopPropagation()}>
             <button className="modal-close-btn" style={{ color: '#fff' }} onClick={() => setActiveModal(null)}>×</button>
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '22px', fontWeight: 'bold', fontFamily: 'Playfair Display, serif' }}>Contact AuraDental</h2>
+              <h2 style={{ fontSize: '22px', fontWeight: 'bold', fontFamily: "'DM Serif Display', serif" }}>Contact AuraDental</h2>
               <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '4px' }}>Get in touch with our laboratory team.</p>
             </div>
             
