@@ -241,33 +241,43 @@ export default function LandingPage({ onNavigate }) {
             <div className="landing-about-image-col">
               <img src={dentalOperatory} alt="Dental Operatory" className="landing-about-img" />
               <div className="landing-about-badge">
-                <span className="badge-v">V2.0</span>
-                <span className="badge-lbl">THE NEW DENTAL STANDARD</span>
+                <span className="badge-v">10+</span>
+                <span className="badge-lbl">Years of dental laboratory craftsmanship</span>
               </div>
             </div>
             <div className="landing-about-info-col">
-              <span className="landing-section-tag">ABOUT J3 DENTAL LAB</span>
+              <span className="landing-section-tag" style={{ color: '#dda73c' }}>About J3 Dental Lab</span>
               <h2 className="landing-section-title">BUILT FOR ACCURACY. DESIGNED FOR BETTER COLLABORATION.</h2>
               <p className="landing-section-desc">
-                At J3 Dental Lab, we believe that every restoration is a work of art. By combining advanced digital technology with master craftsmanship, we deliver restorations that fit perfectly, function flawlessly, and look beautiful.
+                J3 Dental Lab combines experienced dental technicians, digital workflows and advanced restoration technology to help clinics manage laboratory cases with greater clarity, speed and precision
               </p>
               
-              <div className="landing-about-metrics">
+              <div className="landing-about-metrics" style={{ alignItems: 'center' }}>
                 <div className="landing-metric-item">
-                  <span className="landing-metric-val">0.02mm</span>
-                  <span className="landing-metric-lbl">Restoration Tolerance</span>
+                  <span className="landing-metric-val">98%</span>
+                  <span className="landing-metric-lbl">Satisfaction Rate</span>
                 </div>
                 <div className="landing-metric-item">
-                  <span className="landing-metric-val">12h</span>
-                  <span className="landing-metric-lbl">Standard Milling Time</span>
+                  <span className="landing-metric-val">4.5</span>
+                  <span className="landing-metric-lbl">Customer's Rating</span>
                 </div>
                 
-                <button className="btn-play-video" onClick={() => setActiveModal('3d')}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '6px' }}>
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  </svg>
-                  Play Video / Demo
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 'auto' }}>
+                  <button 
+                    className="btn-outline-white" 
+                    style={{ borderRadius: '20px', padding: '8px 24px', fontSize: '12px', borderColor: 'rgba(255,255,255,0.3)', background: 'transparent', color: '#fff', cursor: 'pointer', transition: 'all 0.2s ease', fontWeight: '500' }}
+                    onClick={() => setLandingView('about')}
+                  >
+                    Read more
+                  </button>
+                  <div 
+                    onClick={() => setLandingView('about')}
+                    className="readmore-arrow-btn"
+                    style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
+                  >
+                    ↗
+                  </div>
+                </div>
               </div>
             </div>
           </div>
