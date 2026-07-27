@@ -1,0 +1,11 @@
+@J3Dental.Api_HostAddress = http://localhost:5093
+
+GET {{J3Dental.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{J3Dental.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
