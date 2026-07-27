@@ -1,31 +1,9 @@
 import React from 'react';
+import logosImg from '../assets/logos.png';
 
 // Golden monogram tooth logo
 const LogoIcon = () => (
-  <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="footerGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#FFF1C5" />
-        <stop offset="30%" stopColor="#D8A236" />
-        <stop offset="70%" stopColor="#A8751B" />
-        <stop offset="100%" stopColor="#F5D061" />
-      </linearGradient>
-    </defs>
-    <path 
-      d="M50 12C38 12 28 15 28 32C28 46 38 52 42 60C45 66 42 78 47 84C49 86 51 88 53 88C55 88 57 86 59 84C64 78 61 66 64 60C68 52 78 46 78 32C78 15 68 12 50 12Z" 
-      stroke="url(#footerGoldGrad)" 
-      strokeWidth="5" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-    <path 
-      d="M43 32H57M50 32V60C50 63.5 47 65.5 44 65.5M54 41.5C57.5 41.5 59.5 39 59.5 37.25C59.5 35.5 57.5 32 54 32M54 51C57.5 51 59.5 48.5 59.5 46.75C59.5 45 57.5 41.5 54 41.5" 
-      stroke="url(#footerGoldGrad)" 
-      strokeWidth="3.8" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
+  <img src={logosImg} alt="J3 Dental Lab Logo" className="footer-logo-img" />
 );
 
 // Gold Contact SVG Icons

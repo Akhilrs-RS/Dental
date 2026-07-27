@@ -1,145 +1,152 @@
 import React, { useState } from 'react';
+import logosImg from '../assets/logos.png';
 
 const PRODUCT_DATA = [
-  { id: 1, name: 'Zirconia Monolithic Crown', category: 'crowns', material: 'Multilayer Zirconia', turnaround: '5 Days', price: '$149' },
-  { id: 2, name: 'IPS e.max Veneer', category: 'crowns', material: 'Lithium Disilicate', turnaround: '5 Days', price: '$189' },
-  { id: 3, name: 'Custom Titanium Abutment', category: 'implants', material: 'Grade 5 Titanium', turnaround: '7 Days', price: '$249' },
-  { id: 4, name: 'Hybrid Zirconia Abutment', category: 'implants', material: 'Ti-Base + Zirconia', turnaround: '7 Days', price: '$299' },
-  { id: 5, name: 'CLEARsplint Nightguard', category: 'ortho', material: 'Class IIa Biocompatible Resin', turnaround: '5 Days', price: '$129' },
-  { id: 6, name: '3D Printed Surgical Guide', category: 'ortho', material: 'Biocompatible Guide Resin', turnaround: '3 Days', price: '$99' },
-  { id: 7, name: 'PMMA Temporary Crown', category: 'crowns', material: 'High-density PMMA', turnaround: '2 Days', price: '$49' },
-  { id: 8, name: 'Screw-Retained Bridge', category: 'implants', material: 'Zirconia on Ti-Base', turnaround: '8 Days', price: '$599' },
-  { id: 9, name: 'Diagnostic Wax-Up', category: 'crowns', material: 'Synthetic Lab Wax', turnaround: '4 Days', price: '$39' },
-  { id: 10, name: 'Clear Aligner Models (Per Arch)', category: 'ortho', material: 'Model Resin', turnaround: '4 Days', price: '$79' }
+  // 1. Full Contour Zirconia
+  { id: 1, name: "Monolithic Zirconia Crown", category: "full-contour", material: "Zirconia", use: "Posterior", turnaround: "5d", price: "₹4,500" },
+  { id: 2, name: "Posterior Zirconia", category: "full-contour", material: "Zirconia", use: "Posterior crowns", turnaround: "6d", price: "₹4,200" },
+  { id: 3, name: "Anterior Zirconia", category: "full-contour", material: "Zirconia", use: "Anterior crowns", turnaround: "6d", price: "₹4,800" },
+  { id: 4, name: "Multi-Layer Zirconia", category: "full-contour", material: "Zirconia", use: "Aesthetic crowns", turnaround: "6d", price: "₹5,200" },
+  { id: 5, name: "Premium Esthetic Zirconia", category: "full-contour", material: "Zirconia", use: "High-esthetic", turnaround: "7d", price: "₹6,500" },
+  { id: 9, name: "Bridge Zirconia", category: "full-contour", material: "Zirconia", use: "Multi-unit bridges", turnaround: "8d", price: "₹5,200" },
+  { id: 10, name: "Long Span Bridge", category: "full-contour", material: "Zirconia", use: "Full arch bridges", turnaround: "10d", price: "₹6,800" },
+
+  // 2. Layered Zirconia
+  { id: 6, name: "Anterior Layered Zirconia", category: "layered", material: "Zirconia + Ceramic", use: "Anterior aesthetics", turnaround: "7d", price: "₹5,800" },
+  { id: 7, name: "Posterior Layered Zirconia", category: "layered", material: "Zirconia + Ceramic", use: "Posterior strength", turnaround: "7d", price: "₹5,500" },
+  { id: 8, name: "Implant Zirconia", category: "layered", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹7,500" },
+
+  // 3. E-Max Restorations
+  { id: 11, name: "E-Max Crown", category: "emax", material: "Lithium Disilicate", use: "Anterior crowns", turnaround: "5d", price: "₹5,000" },
+  { id: 12, name: "E-Max Veneer", category: "emax", material: "Lithium Disilicate", use: "Aesthetic veneers", turnaround: "5d", price: "₹4,800" },
+  { id: 13, name: "E-Max Inlay", category: "emax", material: "Lithium Disilicate", use: "Conservative", turnaround: "5d", price: "₹4,200" },
+  { id: 14, name: "E-Max Onlay", category: "emax", material: "Lithium Disilicate", use: "Conservative", turnaround: "5d", price: "₹4,500" },
+  { id: 15, name: "E-Max Overlay", category: "emax", material: "Lithium Disilicate", use: "Full coverage", turnaround: "5d", price: "₹4,700" },
+  { id: 16, name: "E-Max Bridge", category: "emax", material: "Lithium Disilicate", use: "Short span", turnaround: "7d", price: "₹6,200" },
+
+  // 4. Implant Prosthetics
+  { id: 17, name: "Screw Retained Crown", category: "implants", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹9,500" },
+  { id: 18, name: "Cement Retained Crown", category: "implants", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹8,000" },
+  { id: 19, name: "Custom Abutment", category: "implants", material: "Titanium / Zirconia", use: "Implant abutment", turnaround: "6d", price: "₹6,500" },
+  { id: 20, name: "Healing Abutment", category: "implants", material: "Titanium", use: "Healing phase", turnaround: "3d", price: "₹2,500" },
+  { id: 21, name: "Temporary Crown (Implant)", category: "implants", material: "PMMA", use: "Interim", turnaround: "3d", price: "₹3,000" },
+  { id: 22, name: "Implant Bridge", category: "implants", material: "Zirconia", use: "Multi-implant", turnaround: "10d", price: "₹9,500" },
+  { id: 23, name: "Full Arch Implant", category: "implants", material: "Zirconia", use: "Full arch restoration", turnaround: "12d", price: "₹19,500" },
+
+  // 5. CAD/CAM Services
+  { id: 24, name: "Digital Design", category: "cadcam", material: "Digital", use: "CAD design", turnaround: "2d", price: "₹1,500" },
+  { id: 25, name: "CAD Designing", category: "cadcam", material: "Digital", use: "Full design", turnaround: "2d", price: "₹2,000" },
+  { id: 26, name: "CAM Milling", category: "cadcam", material: "Zirconia/PMMA", use: "Milling", turnaround: "1d", price: "₹1,200" },
+  { id: 27, name: "Wax Pattern", category: "cadcam", material: "Wax", use: "Casting pattern", turnaround: "2d", price: "₹1,000" },
+  { id: 28, name: "PMMA", category: "cadcam", material: "PMMA", use: "Temporary", turnaround: "3d", price: "₹1,800" },
+  { id: 29, name: "Diagnostic Wax-Up", category: "cadcam", material: "Wax", use: "Planning", turnaround: "3d", price: "₹1,500" },
+  { id: 30, name: "Smile Design", category: "cadcam", material: "Digital", use: "Aesthetic planning", turnaround: "3d", price: "₹4,000" },
+
+  // 6. Shade Matching
+  { id: 31, name: "Standard Shade", category: "shade", material: "Digital", use: "Vita Classical", turnaround: "1d", price: "₹500" },
+  { id: 32, name: "Custom Shade", category: "shade", material: "Custom", use: "Bespoke match", turnaround: "1d", price: "₹1,200" },
+  { id: 33, name: "Digital Shade", category: "shade", material: "Spectrophotometer", use: "Precise match", turnaround: "1d", price: "₹1,500" },
+  { id: 34, name: "Photographic Shade", category: "shade", material: "Photographic", use: "Documented match", turnaround: "1d", price: "₹1,000" }
+];
+
+const TABS = [
+  { id: 'all', label: 'All' },
+  { id: 'full-contour', label: 'Full Contour Zirconia' },
+  { id: 'layered', label: 'Layered Zirconia' },
+  { id: 'emax', label: 'E-Max Restorations' },
+  { id: 'implants', label: 'Implant Prosthetics' },
+  { id: 'cadcam', label: 'CAD/CAM Services' },
+  { id: 'shade', label: 'Shade Matching' }
 ];
 
 export default function ProductsPage({ onNavigate }) {
-  const [activeTab, setActiveTab] = useState('all'); // 'all', 'crowns', 'implants', 'ortho'
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
 
   const filteredProducts = PRODUCT_DATA.filter(product => {
-    const matchesTab = activeTab === 'all' || product.category === activeTab;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.material.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesSearch;
+    return activeTab === 'all' || product.category === activeTab;
   });
 
   return (
-    <div className="landing-subpage-container">
+    <div className="landing-subpage-container products-page-custom">
       
       {/* Hero Title Section */}
-      <section className="subpage-hero-section">
-        <span className="landing-section-tag">OUR CATALOG</span>
-        <h1 className="subpage-title">
-          RESTORATIONS CRAFTED FOR<br />
-          FUNCTION, ACCURACY AND AESTHETICS.
-        </h1>
-        <p className="subpage-subtitle">
-          Search our product list, check standard turnaround times, and get estimated pricing.
-        </p>
+      <section className="products-hero-section-custom">
+        <div className="products-hero-left">
+          <span className="products-subtitle-tag">Products</span>
+          <h1 className="products-title-custom">
+            RESTORATIONS CRAFTED FOR<br />
+            FUNCTION, ACCURACY AND<br />
+            AESTHETICS.
+          </h1>
+          <p className="products-desc-custom">
+            Search and filter our full product catalogue. Prices are indicative — logged-in clinics see their custom pricing.
+          </p>
+        </div>
+        <div className="products-hero-right">
+          <img src={logosImg} alt="J3 Dental Lab Decorative Logo" className="products-hero-logo" />
+        </div>
       </section>
 
-      {/* Catalog Search & Table Section */}
-      <section className="subpage-content-section">
-        <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
+      {/* Catalog Filters and List Section */}
+      <section className="products-content-section-custom">
+        <div className="products-content-wrapper">
           
-          {/* Tabs and Search Bar row */}
-          <div className="catalog-filters-row">
-            <div className="catalog-tabs">
-              <button 
-                className={`catalog-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveTab('all')}
+          {/* Tabs row */}
+          <div className="products-tabs-row">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                className={`product-tab-btn-pill ${activeTab === tab.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
               >
-                All Products
+                {tab.label}
               </button>
-              <button 
-                className={`catalog-tab-btn ${activeTab === 'crowns' ? 'active' : ''}`}
-                onClick={() => setActiveTab('crowns')}
-              >
-                Crowns & Bridges
-              </button>
-              <button 
-                className={`catalog-tab-btn ${activeTab === 'implants' ? 'active' : ''}`}
-                onClick={() => setActiveTab('implants')}
-              >
-                Implants
-              </button>
-              <button 
-                className={`catalog-tab-btn ${activeTab === 'ortho' ? 'active' : ''}`}
-                onClick={() => setActiveTab('ortho')}
-              >
-                Orthodontics & Splints
-              </button>
-            </div>
+            ))}
+          </div>
 
-            <div className="catalog-search-wrapper">
-              <input 
-                type="text" 
-                placeholder="Search products or materials..." 
-                className="catalog-search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <span className="catalog-search-icon">🔍</span>
-            </div>
+          {/* Product Count indicator */}
+          <div className="products-count-bar">
+            <span>{filteredProducts.length} products</span>
           </div>
 
           {/* Product Data Table */}
-          <div className="catalog-table-wrapper">
-            {filteredProducts.length > 0 ? (
-              <table className="catalog-table">
-                <thead>
-                  <tr>
-                    <th>Product Name</th>
-                    <th>Category</th>
-                    <th>Material Composition</th>
-                    <th>Turnaround</th>
-                    <th style={{ textAlign: 'right' }}>Est. Price</th>
-                    <th style={{ textAlign: 'center' }}>Action</th>
+          <div className="products-table-wrapper">
+            <table className="products-custom-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Material</th>
+                  <th>Use</th>
+                  <th>Turnaround</th>
+                  <th style={{ textAlign: 'right' }}>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map(product => (
+                  <tr key={product.id}>
+                    <td className="product-name-bold-cell">{product.name}</td>
+                    <td className="product-material-cell">{product.material}</td>
+                    <td className="product-use-cell">{product.use}</td>
+                    <td className="product-turnaround-cell">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '6px', verticalAlign: 'middle', opacity: 0.6 }}>
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span>{product.turnaround}</span>
+                    </td>
+                    <td className="product-price-action-cell">
+                      <span className="product-price-bold">{product.price}</span>
+                      <button 
+                        className="product-add-action-btn"
+                        onClick={() => onNavigate('planner')}
+                      >
+                        + Add
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {filteredProducts.map(product => (
-                    <tr key={product.id}>
-                      <td className="prod-name-cell">{product.name}</td>
-                      <td>
-                        <span className={`prod-cat-badge ${product.category}`}>
-                          {product.category === 'crowns' 
-                            ? 'Crowns & Bridges' 
-                            : product.category === 'implants' 
-                            ? 'Implantology' 
-                            : 'Ortho & Splints'
-                          }
-                        </span>
-                      </td>
-                      <td style={{ color: '#94a3b8' }}>{product.material}</td>
-                      <td style={{ fontWeight: '500' }}>{product.turnaround}</td>
-                      <td style={{ textAlign: 'right', fontWeight: '700', color: '#dda73c' }}>{product.price}</td>
-                      <td style={{ textAlign: 'center' }}>
-                        <button 
-                          className="catalog-order-btn"
-                          onClick={() => onNavigate('planner')}
-                        >
-                          Submit Case
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '60px 20px', color: '#94a3b8' }}>
-                <div style={{ fontSize: '32px', marginBottom: '12px' }}>🔍</div>
-                <p>No products match your search or filter criteria.</p>
-                <button 
-                  className="btn btn-secondary" 
-                  style={{ marginTop: '16px', fontSize: '12px' }}
-                  onClick={() => { setSearchQuery(''); setActiveTab('all'); }}
-                >
-                  Clear Filters
-                </button>
-              </div>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
 
         </div>
@@ -148,3 +155,4 @@ export default function ProductsPage({ onNavigate }) {
     </div>
   );
 }
+

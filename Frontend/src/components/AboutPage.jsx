@@ -1,173 +1,164 @@
 import React from 'react';
-import dentalOperatory from '../assets/dental_operatory.png';
-import zirconiaRestorationImg from '../assets/zirconia_restoration.png';
-import millingMachineImg from '../assets/milling_machine.png';
-import teethProfileImg from '../assets/teeth_profile.png';
-import homeBg from '../assets/home.png';
+import dImg from '../assets/d.png';
+import teethImg from '../assets/teeth.png';
 
 export default function AboutPage({ onNavigate }) {
   return (
-    <div className="landing-subpage-container">
+    <div className="landing-subpage-container about-page-custom">
       
-      {/* Hero Title Section */}
+      {/* Section 1: Hero Section */}
       <section className="subpage-hero-section">
-        <span className="landing-section-tag">ABOUT US</span>
-        <h1 className="subpage-title">
+        <span className="about-subtitle-tag">About J3 Dental Lab</span>
+        <h1 className="subpage-title-custom">
           DENTAL CRAFTSMANSHIP<br />
           SUPPORTED BY DIGITAL PRECISION.
         </h1>
-        <p className="subpage-subtitle">
-          The alignment of master ceramic technicians and state-of-the-art CAD/CAM engineering.
+        <p className="subpage-desc-custom">
+          For nearly two decades, J3 Dental Lab has partnered with dental practices to deliver restorations that balance strength, accuracy, and aesthetics.
         </p>
       </section>
 
-      {/* Story & Image Section */}
-      <section className="about-story-section">
-        <div className="landing-about-grid">
-          <div className="landing-about-image-col">
-            <img src={dentalOperatory} alt="Dental Laboratory" className="landing-about-img" />
-            <div className="landing-about-badge">
-              <span className="badge-v">V2.0</span>
-              <span className="badge-lbl">THE NEW DENTAL STANDARD</span>
-            </div>
+      {/* Section 2: Our Story */}
+      <section className="about-story-section-custom">
+        <div className="about-story-grid">
+          <div className="about-story-image-col">
+            <img src={dImg} alt="Dental Laboratory" className="about-story-img" />
           </div>
           
-          <div className="landing-about-info-col">
-            <span className="landing-section-tag">OUR ORIGINS</span>
-            <h2 className="landing-section-title">From A Single Tooth To A Digital Laboratory.</h2>
-            <p className="landing-section-desc">
-              At J3 Dental Lab, we believe that every restoration is a work of art. By combining advanced digital technology with master craftsmanship, we deliver restorations that fit perfectly, function flawlessly, and look beautiful.
+          <div className="about-story-info-col">
+            <span className="about-section-tag-gold">OUR STORY</span>
+            <h2 className="about-section-title-serif">From A Single Bench To A Digital Laboratory.</h2>
+            <p className="about-section-desc-light">
+              J3 Dental Lab began as a small traditional dental laboratory focused on hand-crafted ceramic restorations. Over the years, we've invested in digital scanners, CAD/CAM milling systems and intraoral scan processing — while keeping the craftspeople who give every restoration its character.
             </p>
-            <p className="landing-section-desc">
-              Our lab was established to bridge the gap between clinics and technical execution. We understand the daily clinical challenges of seating crowns and custom abutments, which is why we have engineered a workflow that guarantees accuracy down to 20 microns.
+            <p className="about-section-desc-light">
+              Today, clinics across South India rely on J3 for everything from single-unit crowns to full-arch implant prosthetics, all managed through a connected digital platform.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Values & Core Bullet Points Section */}
-      <section className="about-values-section">
-        <div className="landing-about-grid">
-          <div>
-            <span className="landing-section-tag">THE PROBLEM WE SOLVE</span>
-            <h3 className="landing-section-title" style={{ marginTop: '12px' }}>
-              Make every laboratory case return with a perfect fit and correct profile.
+      {/* Section 3: Our Mission & Quality Philosophy */}
+      <section className="about-mission-section-custom">
+        <div className="about-mission-grid">
+          <div className="about-mission-col">
+            <span className="about-section-tag-muted">Our Mission</span>
+            <h3 className="about-section-title-small">
+              Make every laboratory case clearer, faster and more precise.
             </h3>
-            <p className="landing-section-desc" style={{ marginTop: '16px' }}>
-              Too often, restorations require extensive chairside adjustment or, worse, remakes. J3 Dental Lab eliminates variables by double-checking every design digitally against dynamic occlusion models.
+            <p className="about-section-desc-muted">
+              We believe clinics deserve a laboratory partner that communicates openly, tracks every stage and delivers consistent quality. Our mission is to bridge traditional dental craftsmanship with modern digital workflows — so practices can focus on patients, not chasing cases.
             </p>
           </div>
 
-          <div>
-            <span className="landing-section-tag">OUR APPROACH</span>
-            <h3 className="landing-section-title" style={{ marginTop: '12px' }}>
-              Quality by hand, not machine.
+          <div className="about-mission-col">
+            <span className="about-section-tag-muted">Quality Philosophy</span>
+            <h3 className="about-section-title-small">
+              Quality is checked, not assumed.
             </h3>
-            <p className="landing-section-desc" style={{ marginTop: '16px', marginBottom: '16px' }}>
-              While milling machines produce raw material geometry, true vitality and natural aesthetics can only be achieved by the human hand.
+            <p className="about-section-desc-muted">
+              Every restoration passes through defined quality gates: scan review, margin verification, shade matching, fit confirmation and final inspection. No case leaves the lab without sign-off.
             </p>
-            <ul className="j3-about-bullets">
-              <li><span>✓</span> Monolithic and multilayer zirconia</li>
-              <li><span>✓</span> Ultra-precise 3D printed surgical guides</li>
-              <li><span>✓</span> Active 3D verification and digital matching</li>
-              <li><span>✓</span> Master ceramist micro-layering</li>
+            <ul className="j3-about-bullets-custom">
+              <li>Per-stage quality checks</li>
+              <li>Digital margin verification</li>
+              <li>Shade confirmation under controlled light</li>
+              <li>Final inspection sign-off</li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* Four Principles Section */}
-      <section className="about-principles-section">
-        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <span className="landing-section-tag">CORE VALUES</span>
-          <h2 className="landing-section-title" style={{ marginTop: '12px' }}>Four principles behind every restoration.</h2>
+      {/* Section 4: Why Clinics Choose J3 */}
+      <section className="about-principles-section-custom">
+        <div className="about-principles-header">
+          <span className="about-section-tag-muted">Why Clinics Choose J3</span>
+          <h2 className="about-section-title-serif">Four principles behind every restoration.</h2>
         </div>
 
-        <div className="principles-grid">
-          <div className="principle-card">
-            <div className="principle-number">01</div>
-            <h4 className="principle-title">Craftsmanship</h4>
-            <p className="principle-desc">
-              Every crown and veneer is hand-finished and stained by master dental technicians under high-power microscopes.
+        <div className="principles-grid-custom">
+          <div className="principle-column-custom">
+            <h4 className="principle-title-serif">Craftsmanship</h4>
+            <p className="principle-desc-custom">
+              Experienced technicians with an eye for detail on every restoration.
             </p>
           </div>
 
-          <div className="principle-card">
-            <div className="principle-number">02</div>
-            <h4 className="principle-title">Digital Precision</h4>
-            <p className="principle-desc">
-              Advanced CAD/CAM alignments eliminate manual error margins, maintaining margin accuracy under 20 microns.
+          <div className="principle-column-custom">
+            <h4 className="principle-title-serif">Digital Precision</h4>
+            <p className="principle-desc-custom">
+              CAD/CAM workflows and digital scanning for consistent, accurate results.
             </p>
           </div>
 
-          <div className="principle-card">
-            <div className="principle-number">03</div>
-            <h4 className="principle-title">Transparency</h4>
-            <p className="principle-desc">
-              Through our interactive dashboard, doctors can track the live processing stage of every case in real time.
+          <div className="principle-column-custom">
+            <h4 className="principle-title-serif">Transparency</h4>
+            <p className="principle-desc-custom">
+              Every case tracked, every invoice clear, every stage visible.
             </p>
           </div>
 
-          <div className="principle-card">
-            <div className="principle-number">04</div>
-            <h4 className="principle-title">Partnership</h4>
-            <p className="principle-desc">
-              We operate as an extension of your clinic, providing direct communication with the designers handling your cases.
+          <div className="principle-column-custom">
+            <h4 className="principle-title-serif">Partnership</h4>
+            <p className="principle-desc-custom">
+              We work alongside clinics as an extension of your practice.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Staff Bio Cards Section */}
-      <section className="about-team-section">
-        <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <span className="landing-section-tag">THE TEAM</span>
-          <h2 className="landing-section-title" style={{ marginTop: '12px' }}>The people behind the precision.</h2>
+      {/* Section 5: Technician Expertise */}
+      <section className="about-expertise-section-custom">
+        <div className="about-expertise-header">
+          <span className="about-section-tag-muted">Technician Expertise</span>
+          <h2 className="about-section-title-serif">The people behind the precision.</h2>
         </div>
 
-        <div className="team-grid">
-          <div className="team-card">
-            <div className="team-avatar-placeholder">🎨</div>
-            <h4 className="team-name">Master Ceramist</h4>
-            <p className="team-role">Aesthetic Design Lead</p>
-            <p className="team-desc">Applies micro-layered feldspathic porcelain to crowns and veneers for perfect lifelike aesthetics.</p>
+        <div className="expertise-grid-custom">
+          <div className="expertise-item-custom">
+            <div className="expertise-number-circle">1</div>
+            <div className="expertise-content-custom">
+              <h4 className="expertise-title-serif">Master Ceramists</h4>
+              <p className="expertise-desc-custom">Artisans with 15+ years shaping layered ceramics and zirconia restorations.</p>
+            </div>
           </div>
 
-          <div className="team-card">
-            <div className="team-avatar-placeholder">💻</div>
-            <h4 className="team-name">CAD Designer</h4>
-            <p className="team-role">Digital Engineering</p>
-            <p className="team-desc">Traces margins and aligns dynamic occlusion for crowns, bridges, and complex implant frameworks.</p>
+          <div className="expertise-item-custom">
+            <div className="expertise-number-circle">2</div>
+            <div className="expertise-content-custom">
+              <h4 className="expertise-title-serif">CAD Designers</h4>
+              <p className="expertise-desc-custom">Digital designers trained in the latest CAD software and smile design.</p>
+            </div>
           </div>
 
-          <div className="team-card">
-            <div className="team-avatar-placeholder">⚙️</div>
-            <h4 className="team-name">Craft Technician</h4>
-            <p className="team-role">Milling & Sintering</p>
-            <p className="team-desc">Operates our 5-axis wet and dry milling machines, calibrating speed and nesting for zirconia blocks.</p>
+          <div className="expertise-item-custom">
+            <div className="expertise-number-circle">3</div>
+            <div className="expertise-content-custom">
+              <h4 className="expertise-title-serif">CAM Operators</h4>
+              <p className="expertise-desc-custom">Milling specialists running precision 5-axis CAM systems.</p>
+            </div>
           </div>
 
-          <div className="team-card">
-            <div className="team-avatar-placeholder">🔍</div>
-            <h4 className="team-name">Quality Assurer</h4>
-            <p className="team-role">Verification Lead</p>
-            <p className="team-desc">Performs micro-gap analysis and tests restorations on articulating plaster models before dispatch.</p>
+          <div className="expertise-item-custom">
+            <div className="expertise-number-circle">4</div>
+            <div className="expertise-content-custom">
+              <h4 className="expertise-title-serif">Quality Technicians</h4>
+              <p className="expertise-desc-custom">Dedicated QC at every stage, from scan review to final shade check.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Bottom CTA Banner */}
-      <section className="about-cta-banner">
-        <div className="landing-about-grid" style={{ alignItems: 'center' }}>
-          <div style={{ textAlign: 'left' }}>
-            <h2 className="about-cta-title">Ready to work with a laboratory that keeps you informed?</h2>
-            <p style={{ color: 'rgba(255,255,255,0.7)', marginTop: '8px', fontSize: '14px' }}>
-              Register your clinic today to begin digital case submission and access real-time case tracking.
-            </p>
+      {/* Section 6: Bottom CTA Card */}
+      <section className="about-cta-card-wrapper">
+        <div className="about-cta-card-beige">
+          <div className="about-cta-card-image-col">
+            <img src={teethImg} alt="Teeth Restoration" className="about-cta-card-img" />
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <button className="btn-gold" style={{ padding: '14px 36px' }} onClick={() => onNavigate('scheduler')}>
-              Register Now
+          <div className="about-cta-card-content-col">
+            <h2 className="about-cta-card-title-serif">Ready to work with a laboratory that keeps you informed?</h2>
+            <button className="about-cta-card-btn" onClick={() => onNavigate('scheduler')}>
+              Register your clinic &rarr;
             </button>
           </div>
         </div>
@@ -176,3 +167,4 @@ export default function AboutPage({ onNavigate }) {
     </div>
   );
 }
+

@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
-import dentalOperatory from '../assets/dental_operatory.png';
-import zirconiaRestorationImg from '../assets/zirconia_restoration.png';
-import millingMachineImg from '../assets/milling_machine.png';
-import teethProfileImg from '../assets/teeth_profile.png';
-import homeBg from '../assets/home.png';
+import img4 from '../assets/4.png';
+import img1 from '../assets/1.jpg';
+import img14 from '../assets/14.png';
+import imgD from '../assets/d.png';
+import img3 from '../assets/3.png';
+import img7 from '../assets/7.png';
+import img6 from '../assets/6.jpg';
+import img102 from '../assets/102.png';
 
 const GALLERY_ITEMS = [
-  { id: 1, title: 'Monolithic Zirconia Crown', category: 'zirconia', img: zirconiaRestorationImg, spec: 'Multilayer, shade A2, prep #14' },
-  { id: 2, title: 'Anterior e.max Veneers', category: 'veneers', img: homeBg, spec: 'Pressed glass ceramic, shade BL3, teeth #7-10' },
-  { id: 3, title: 'Intraoral 3D CAD Alignment', category: 'cad', img: teethProfileImg, spec: 'Digital margin marking, tooth #30' },
-  { id: 4, title: '5-Axis Wet Milling Process', category: 'milling', img: millingMachineImg, spec: 'Precision cobalt-chromium milling' },
-  { id: 5, title: 'Custom Abutment Connection', category: 'implants', img: dentalOperatory, spec: 'Grade 5 Titanium, customized emergence profile' },
-  { id: 6, title: 'Full Arch Hybrid Zirconia', category: 'zirconia', img: zirconiaRestorationImg, spec: 'All-on-4 framework, customized shading' },
-  { id: 7, title: 'Digital Smile Makeover Design', category: 'cad', img: teethProfileImg, spec: 'Cosmetic diagnostic wax-up mapping' },
-  { id: 8, title: 'Custom Layered e.max Crowns', category: 'veneers', img: zirconiaRestorationImg, spec: 'IPS e.max hand-stained, shade B1, tooth #8-9' }
+  { id: 1, title: 'Monolithic Zirconia Crown', category: 'zirconia', img: img4, spec: 'Multilayer, shade A2, prep #14' },
+  { id: 2, title: 'Anterior e.max Veneers', category: 'veneers', img: img1, spec: 'Pressed glass ceramic, shade BL3, teeth #7-10' },
+  { id: 3, title: 'Intraoral 3D CAD Alignment', category: 'cad', img: img14, spec: 'Digital margin marking, tooth #30' },
+  { id: 4, title: '5-Axis Wet Milling Process', category: 'milling', img: imgD, spec: 'Precision cobalt-chromium milling' },
+  { id: 5, title: 'Custom Abutment Connection', category: 'implants', img: img3, spec: 'Grade 5 Titanium, customized emergence profile' },
+  { id: 6, title: 'Full Arch Hybrid Zirconia', category: 'zirconia', img: img7, spec: 'All-on-4 framework, customized shading' },
+  { id: 7, title: 'Digital Smile Makeover Design', category: 'cad', img: img6, spec: 'Cosmetic diagnostic wax-up mapping' },
+  { id: 8, title: 'Custom Layered e.max Crowns', category: 'veneers', img: img102, spec: 'IPS e.max hand-stained, shade B1, tooth #8-9' }
+];
+
+const CATEGORIES = [
+  { id: 'all', label: 'Show All' },
+  { id: 'zirconia', label: 'Zirconia' },
+  { id: 'veneers', label: 'Veneers & Aesthetics' },
+  { id: 'cad', label: 'CAD Models' },
+  { id: 'milling', label: 'Milling Machine' }
 ];
 
 export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState('all'); // 'all', 'zirconia', 'veneers', 'cad', 'milling', 'implants'
+  const [activeCategory, setActiveCategory] = useState('all');
   const [lightboxItem, setLightboxItem] = useState(null);
 
   const filteredItems = GALLERY_ITEMS.filter(item => {
@@ -25,76 +36,53 @@ export default function GalleryPage() {
   });
 
   return (
-    <div className="landing-subpage-container">
+    <div className="landing-subpage-container gallery-page-custom">
       
       {/* Hero Title Section */}
       <section className="subpage-hero-section">
-        <span className="landing-section-tag">PORTFOLIO</span>
-        <h1 className="subpage-title">
+        <span className="gallery-subtitle-tag">Portfolio</span>
+        <h1 className="subpage-title-custom">
           A PORTFOLIO OF PRECISION.
         </h1>
-        <p className="subpage-subtitle">
+        <p className="subpage-desc-custom">
           Explore photographic and digital alignment cases representing our lab's restorative craftsmanship.
         </p>
       </section>
 
       {/* Gallery Content Section */}
-      <section className="subpage-content-section">
-        <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
+      <section className="gallery-content-section-custom">
+        <div className="gallery-content-wrapper">
           
           {/* Category Tabs */}
-          <div className="gallery-tabs-row" style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
-            <div className="catalog-tabs" style={{ background: 'rgba(255,255,255,0.02)', padding: '6px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="gallery-tabs-row-custom">
+            {CATEGORIES.map(cat => (
               <button 
-                className={`catalog-tab-btn ${activeCategory === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveCategory('all')}
+                key={cat.id}
+                className={`gallery-tab-btn-pill ${activeCategory === cat.id ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat.id)}
               >
-                Show All
+                {cat.label}
               </button>
-              <button 
-                className={`catalog-tab-btn ${activeCategory === 'zirconia' ? 'active' : ''}`}
-                onClick={() => setActiveCategory('zirconia')}
-              >
-                Zirconia
-              </button>
-              <button 
-                className={`catalog-tab-btn ${activeCategory === 'veneers' ? 'active' : ''}`}
-                onClick={() => setActiveCategory('veneers')}
-              >
-                Veneers & Aesthetics
-              </button>
-              <button 
-                className={`catalog-tab-btn ${activeCategory === 'cad' ? 'active' : ''}`}
-                onClick={() => setActiveCategory('cad')}
-              >
-                CAD Models
-              </button>
-              <button 
-                className={`catalog-tab-btn ${activeCategory === 'milling' ? 'active' : ''}`}
-                onClick={() => setActiveCategory('milling')}
-              >
-                Milling Machine
-              </button>
-            </div>
+            ))}
           </div>
 
           {/* Masonry-style Portfolio Grid */}
-          <div className="portfolio-grid">
+          <div className="portfolio-grid-custom">
             {filteredItems.map(item => (
               <div 
                 key={item.id} 
-                className="portfolio-card"
+                className="portfolio-card-custom"
                 onClick={() => setLightboxItem(item)}
               >
-                <div className="portfolio-card-img-wrapper">
-                  <img src={item.img} className="portfolio-card-img" alt={item.title} />
-                  <div className="portfolio-card-hover-overlay">
-                    <span className="portfolio-card-zoom-icon">🔍 View Details</span>
+                <div className="portfolio-card-img-wrapper-custom">
+                  <img src={item.img} className="portfolio-card-img-custom" alt={item.title} />
+                  <div className="portfolio-card-hover-overlay-custom">
+                    <span className="portfolio-card-zoom-icon-custom">🔍 View Details</span>
                   </div>
                 </div>
-                <div className="portfolio-card-content">
-                  <span className="portfolio-card-cat">{item.category.toUpperCase()}</span>
-                  <h3 className="portfolio-card-title">{item.title}</h3>
+                <div className="portfolio-card-content-custom">
+                  <span className="portfolio-card-cat-custom">{item.category.toUpperCase()}</span>
+                  <h3 className="portfolio-card-title-custom">{item.title}</h3>
                 </div>
               </div>
             ))}
@@ -150,3 +138,4 @@ export default function GalleryPage() {
     </div>
   );
 }
+

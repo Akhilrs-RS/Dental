@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import homeBg from '../assets/home.png';
 import Footer from './Footer';
-import dentalOperatory from '../assets/dental_operatory.png';
+import dImg from '../assets/d.png';
 import zirconiaRestorationImg from '../assets/zirconia_restoration.png';
 import millingMachineImg from '../assets/milling_machine.png';
 import teethProfileImg from '../assets/teeth_profile.png';
 import AboutPage from './AboutPage';
+import ServicesPage from './ServicesPage';
 import ProductsPage from './ProductsPage';
 import PickupRequestPage from './PickupRequestPage';
 import GalleryPage from './GalleryPage';
 import ContactPage from './ContactPage';
+import RegisterPage from './RegisterPage';
+import logosImg from '../assets/logos.png';
+import teImg from '../assets/te.png';
+
+
 
 // Carousel Images
 import img1 from '../assets/1.jpg';
@@ -30,30 +36,7 @@ import img102 from '../assets/102.png';
 
 // SVG Icons
 const LogoIcon = () => (
-  <svg width="46" height="46" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#FFF1C5" />
-        <stop offset="30%" stopColor="#D8A236" />
-        <stop offset="70%" stopColor="#A8751B" />
-        <stop offset="100%" stopColor="#F5D061" />
-      </linearGradient>
-    </defs>
-    <path 
-      d="M50 12C38 12 28 15 28 32C28 46 38 52 42 60C45 66 42 78 47 84C49 86 51 88 53 88C55 88 57 86 59 84C64 78 61 66 64 60C68 52 78 46 78 32C78 15 68 12 50 12Z" 
-      stroke="url(#goldGradient)" 
-      strokeWidth="4.5" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-    <path 
-      d="M43 32H57M50 32V60C50 63.5 47 65.5 44 65.5M54 41.5C57.5 41.5 59.5 39 59.5 37.25C59.5 35.5 57.5 32 54 32M54 51C57.5 51 59.5 48.5 59.5 46.75C59.5 45 57.5 41.5 54 41.5" 
-      stroke="url(#goldGradient)" 
-      strokeWidth="3.5" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
+  <img src={logosImg} alt="J3 Dental Lab Logo" className="landing-logo-img" />
 );
 
 const DocumentIcon = () => (
@@ -110,6 +93,27 @@ export default function LandingPage({ onNavigate }) {
   const [trackingStageIndex, setTrackingStageIndex] = useState(6);
   const [landingView, setLandingView] = useState('home');
 
+  const REVIEWS_LIST = [
+    {
+      quote: "The digital case submission and live tracking have completely changed how we work with our lab. We always know exactly where a case is in production.",
+      author: "Dr. Anitha Raman",
+      clinic: "Smile Dental Clinic - Coimbatore, TN",
+      restoration: "Full Contour Zirconia"
+    },
+    {
+      quote: "The quality of restorations from J3 Dental Lab is unmatched. The fit and aesthetics are consistently perfect, reducing chairside adjustment time.",
+      author: "Dr. Rajesh Kumar",
+      clinic: "Pearl Dental Clinic - Chennai, TN",
+      restoration: "E-Max Restorations"
+    },
+    {
+      quote: "Their digital workflow integration has made scheduling pickups and uploading STL scans incredibly seamless. J3 is our trusted laboratory partner.",
+      author: "Dr. Sneha Patel",
+      clinic: "Dental Care - Bangalore, KA",
+      restoration: "Implant Prosthetics"
+    }
+  ];
+
   const handlePickupSubmit = (e) => {
     e.preventDefault();
     setPickupSubmitted(true);
@@ -128,14 +132,14 @@ export default function LandingPage({ onNavigate }) {
 
         <div className="landing-nav-pill">
           <span className={`landing-nav-link ${landingView === 'about' ? 'active' : ''}`} onClick={() => setLandingView('about')}>About</span>
-          <span className="landing-nav-link" onClick={() => setActiveModal('services')}>Services</span>
+          <span className={`landing-nav-link ${landingView === 'services' ? 'active' : ''}`} onClick={() => setLandingView('services')}>Services</span>
           <span className={`landing-nav-link ${landingView === 'products' ? 'active' : ''}`} onClick={() => setLandingView('products')}>Products</span>
           <span className={`landing-nav-link ${landingView === 'pickup' ? 'active' : ''}`} onClick={() => setLandingView('pickup')}>Pickup Request</span>
           <span className={`landing-nav-link ${landingView === 'gallery' ? 'active' : ''}`} onClick={() => setLandingView('gallery')}>Gallery</span>
           <span className={`landing-nav-link ${landingView === 'contact' ? 'active' : ''}`} onClick={() => setLandingView('contact')}>Contact</span>
         </div>
 
-        <button className="landing-login-btn" onClick={() => onNavigate('dashboard')}>
+        <button className="landing-login-btn" onClick={() => setLandingView('register')}>
           <span>Login</span>
           <div className="landing-login-arrow">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -147,6 +151,10 @@ export default function LandingPage({ onNavigate }) {
       </nav>
     </header>
   );
+
+  if (landingView === 'register') {
+    return <RegisterPage onBack={() => setLandingView('home')} />;
+  }
 
   return (
     <div className="landing-page-wrapper">
@@ -255,7 +263,7 @@ export default function LandingPage({ onNavigate }) {
         <section className="landing-about-section">
           <div className="landing-about-grid">
             <div className="landing-about-image-col">
-              <img src={dentalOperatory} alt="Dental Operatory" className="landing-about-img" />
+              <img src={dImg} alt="J3 Dental Lab Craftsmanship" className="landing-about-img" />
               <div className="landing-about-badge">
                 <span className="badge-v">10+</span>
                 <span className="badge-lbl">Years of dental laboratory craftsmanship</span>
@@ -521,57 +529,14 @@ export default function LandingPage({ onNavigate }) {
                 </div>
               </div>
 
-              <button className="btn-toothchart-gold" onClick={() => onNavigate('patients')}>
+              <button className="btn-toothchart-gold" onClick={() => setLandingView('register')}>
                 Try the Digital Prescription &rarr;
               </button>
             </div>
 
             <div className="landing-toothchart-card-col">
-              <div className="fdi-chart-card">
-                <div className="fdi-chart-card-header">
-                  <div>
-                    <span className="fdi-chart-subtitle">FDI TOOTH CHART</span>
-                    <h3 className="fdi-chart-title">Upper &amp; Lower Arch</h3>
-                  </div>
-                  <span className="fdi-chart-badge">6 SELECTED</span>
-                </div>
-
-                <div className="fdi-chart-divider"></div>
-
-                <div className="fdi-arch-section">
-                  <span className="fdi-arch-label">UPPER ARCH</span>
-                  <div className="fdi-teeth-row">
-                    {['18','17','16','15','14','13','12','11','21','22','23','24','25','26','27','28'].map((tooth) => {
-                      let typeClass = '';
-                      if (tooth === '16') typeClass = 'crown';
-                      else if (tooth === '11' || tooth === '21') typeClass = 'implant';
-                      else if (tooth === '26') typeClass = 'bridge';
-
-                      return (
-                        <div key={tooth} className={`fdi-tooth-box ${typeClass}`}>
-                          {tooth}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="fdi-arch-section" style={{ marginTop: '24px' }}>
-                  <span className="fdi-arch-label">LOWER ARCH</span>
-                  <div className="fdi-teeth-row">
-                    {['48','47','46','45','44','43','42','41','31','32','33','34','35','36','37','38'].map((tooth) => {
-                      let typeClass = '';
-                      if (tooth === '46') typeClass = 'extraction';
-                      else if (tooth === '36') typeClass = 'teal';
-
-                      return (
-                        <div key={tooth} className={`fdi-tooth-box ${typeClass}`}>
-                          {tooth}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+              <div className="fdi-chart-image-card">
+                <img src={teImg} alt="Interactive FDI Dental Chart" className="fdi-chart-mockup-img" />
               </div>
             </div>
           </div>
@@ -658,6 +623,58 @@ export default function LandingPage({ onNavigate }) {
           </div>
         </section>
 
+        {/* Section 5b: FDI Precision reviews Section */}
+        <section className="landing-reviews-section">
+          <div className="reviews-content-wrapper">
+            
+            {/* Title block */}
+            <div className="reviews-title-grid">
+              <div className="reviews-title-left">
+                <span className="reviews-subtitle-tag">Interactive Dental Chart</span>
+                <h2 className="reviews-main-title">SELECT TEETH WITH FDI PRECISION.</h2>
+              </div>
+              <div className="reviews-title-right">
+                <p className="reviews-desc-para">
+                  Trusted by dental professionals for precision, reliability, and consistent quality. Every case is handled with care to deliver results clinics can depend on.
+                </p>
+              </div>
+            </div>
+
+            {/* Testimonial Card */}
+            <div className="reviews-card-container">
+              <div className="reviews-quote-icon-row">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#bc9c74">
+                  <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
+                </svg>
+              </div>
+              <div className="reviews-card-body">
+                <p className="reviews-quote-text">
+                  "{REVIEWS_LIST[testimonialIndex].quote}"
+                </p>
+                <div className="reviews-card-divider"></div>
+                <div className="reviews-card-author-info">
+                  <h4 className="reviews-author-name">{REVIEWS_LIST[testimonialIndex].author}</h4>
+                  <p className="reviews-author-clinic">{REVIEWS_LIST[testimonialIndex].clinic}</p>
+                  <p className="reviews-author-restoration">{REVIEWS_LIST[testimonialIndex].restoration}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Slider Dots */}
+            <div className="reviews-dots-row">
+              {REVIEWS_LIST.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`reviews-slider-dot ${testimonialIndex === idx ? 'active' : ''}`}
+                  onClick={() => setTestimonialIndex(idx)}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+          </div>
+        </section>
+
         {/* Section 6: FAQ Accordion Section */}
         <section className="landing-faq-section">
           <div className="landing-faq-grid">
@@ -740,19 +757,20 @@ export default function LandingPage({ onNavigate }) {
         </section>
         </>
         ) : (
-          <>
+          <div className="subpage-wrapper-custom">
             {/* Subpage Header */}
-            <div style={{ background: '#03050a', padding: '0 80px', width: '100%', boxSizing: 'border-box' }}>
+            <div className="subpage-header-wrapper">
               {renderHeader()}
             </div>
 
             {/* Subpages Routing */}
             {landingView === 'about' && <AboutPage onNavigate={onNavigate} />}
+            {landingView === 'services' && <ServicesPage onNavigate={onNavigate} />}
             {landingView === 'products' && <ProductsPage onNavigate={onNavigate} />}
             {landingView === 'pickup' && <PickupRequestPage onNavigate={onNavigate} />}
             {landingView === 'gallery' && <GalleryPage />}
             {landingView === 'contact' && <ContactPage />}
-          </>
+          </div>
         )}
 
         {/* J3 Main Footer */}
@@ -765,7 +783,7 @@ export default function LandingPage({ onNavigate }) {
             }
           }} 
           onOpenModal={(modal) => {
-            if (modal === 'about' || modal === 'products' || modal === 'pickup' || modal === 'gallery' || modal === 'contact') {
+            if (modal === 'about' || modal === 'products' || modal === 'pickup' || modal === 'gallery' || modal === 'contact' || modal === 'services') {
               setLandingView(modal);
             } else {
               setActiveModal(modal);
