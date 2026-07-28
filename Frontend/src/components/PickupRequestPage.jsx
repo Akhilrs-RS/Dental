@@ -15,23 +15,49 @@ export default function PickupRequestPage({ onNavigate }) {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setPickupForm({
-        clinicName: '',
-        doctorName: '',
-        date: '',
-        time: '',
-        address: '',
-        contactPersonDate: '',
-        contactNumberTime: '',
-        cases: '1',
-        notes: ''
+    try {
+      const res = await fetch('http://localhost:5005/api/pickup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clinicId: null,
+          clinicName: pickupForm.clinicName,
+          doctorName: pickupForm.doctorName,
+          pickupDate: pickupForm.date ? new Date(pickupForm.date).toISOString() : new Date().toISOString(),
+          preferredTime: pickupForm.time || '10:00 AM',
+          address: pickupForm.address,
+          contactPerson: pickupForm.contactPersonDate || 'N/A',
+          phone: pickupForm.contactNumberTime || 'N/A',
+          email: 'clinic@j3dental.com', // default clinic email placeholder
+          numberOfCases: parseInt(pickupForm.cases) || 1,
+          specialNotes: pickupForm.notes
+        })
       });
-    }, 4000);
+      if (res.ok) {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setPickupForm({
+            clinicName: '',
+            doctorName: '',
+            date: '',
+            time: '',
+            address: '',
+            contactPersonDate: '',
+            contactNumberTime: '',
+            cases: '1',
+            notes: ''
+          });
+        }, 4000);
+      } else {
+        alert('Server returned an error while scheduling pickup.');
+      }
+    } catch (err) {
+      console.error('Pickup request submit error:', err);
+      alert('Network error submitting pickup request.');
+    }
   };
 
   return (

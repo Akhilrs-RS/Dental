@@ -61,8 +61,32 @@ const TABS = [
 
 export default function ProductsPage({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('all');
+  const [products, setProducts] = useState(PRODUCT_DATA);
 
-  const filteredProducts = PRODUCT_DATA.filter(product => {
+  React.useEffect(() => {
+    fetch('http://localhost:5005/api/catalog/products')
+      .then(res => {
+        if (res.ok) return res.json();
+        throw new Error();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+          const mapped = data.map(item => ({
+            id: item.id,
+            name: item.name,
+            category: item.category,
+            material: item.material,
+            use: item.indicatedUse,
+            turnaround: item.turnaroundTime,
+            price: `₹${item.price.toLocaleString('en-IN')}`
+          }));
+          setProducts(mapped);
+        }
+      })
+      .catch(err => console.log('Using local products list fallback.'));
+  }, []);
+
+  const filteredProducts = products.filter(product => {
     return activeTab === 'all' || product.category === activeTab;
   });
 

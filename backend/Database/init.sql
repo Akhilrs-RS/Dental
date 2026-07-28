@@ -19,6 +19,49 @@ CREATE TABLE IF NOT EXISTS `Services` (
     `Turnaround` VARCHAR(50) NULL
 );
 
+CREATE TABLE IF NOT EXISTS `Clinics` (
+    `Id` INT AUTO_INCREMENT PRIMARY KEY,
+    `ClinicName` VARCHAR(150) NOT NULL,
+    `DoctorName` VARCHAR(100) NOT NULL,
+    `Phone` VARCHAR(20) NOT NULL,
+    `GstNumber` VARCHAR(20) NULL,
+    `Email` VARCHAR(150) NOT NULL UNIQUE,
+    `Address` VARCHAR(255) NOT NULL,
+    `City` VARCHAR(100) NOT NULL,
+    `State` VARCHAR(100) NOT NULL,
+    `Pincode` VARCHAR(15) NOT NULL,
+    `PasswordHash` VARCHAR(255) NOT NULL,
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS `PickupRequests` (
+    `Id` INT AUTO_INCREMENT PRIMARY KEY,
+    `ClinicId` INT NULL,
+    `ClinicName` VARCHAR(150) NOT NULL,
+    `DoctorName` VARCHAR(100) NOT NULL,
+    `Phone` VARCHAR(20) NOT NULL,
+    `Email` VARCHAR(150) NOT NULL,
+    `PickupDate` DATETIME NOT NULL,
+    `PreferredTime` VARCHAR(50) NOT NULL,
+    `Address` VARCHAR(255) NOT NULL,
+    `ContactPerson` VARCHAR(100) NOT NULL,
+    `NumberOfCases` INT DEFAULT 1,
+    `SpecialNotes` TEXT NULL,
+    `Status` VARCHAR(30) DEFAULT 'Pending',
+    `Otp` VARCHAR(6) NULL,
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS `ContactEnquiries` (
+    `Id` INT AUTO_INCREMENT PRIMARY KEY,
+    `Name` VARCHAR(100) NOT NULL,
+    `Email` VARCHAR(150) NOT NULL,
+    `Phone` VARCHAR(20) NOT NULL,
+    `Subject` VARCHAR(150) NOT NULL,
+    `Message` TEXT NOT NULL,
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Delete old rows to prevent duplicates on restart/init
 TRUNCATE TABLE `Products`;
 TRUNCATE TABLE `Services`;

@@ -112,6 +112,31 @@ const SERVICES_DATA = [
 ];
 
 export default function ServicesPage({ onNavigate }) {
+  const [services, setServices] = React.useState(SERVICES_DATA);
+
+  React.useEffect(() => {
+    fetch('http://localhost:5005/api/catalog/services')
+      .then(res => {
+        if (res.ok) return res.json();
+        throw new Error();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+          const mapped = data.map(item => ({
+            num: item.num,
+            title: item.title,
+            desc: item.description,
+            cases: item.cases || '',
+            products: item.products || '',
+            options: item.options || '',
+            turnaround: item.turnaround || ''
+          }));
+          setServices(mapped);
+        }
+      })
+      .catch(err => console.log('Using local services list fallback.'));
+  }, []);
+
   return (
     <div className="landing-subpage-container services-page-custom">
       
@@ -130,7 +155,7 @@ export default function ServicesPage({ onNavigate }) {
       {/* Grid of 12 Cards */}
       <section className="services-grid-section">
         <div className="services-cards-grid">
-          {SERVICES_DATA.map((srv) => (
+          {services.map((srv) => (
             <div key={srv.num} className="service-card-item">
               <div className="service-card-num">{srv.num}</div>
               

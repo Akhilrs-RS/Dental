@@ -33,13 +33,33 @@ export default function ContactPage() {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setForm({ name: '', clinic: '', phone: '', email: '', subject: '', message: '' });
-    }, 4000);
+    try {
+      const res = await fetch('http://localhost:5005/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          subject: form.subject || 'General Enquiry',
+          message: form.message
+        })
+      });
+      if (res.ok) {
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setForm({ name: '', clinic: '', phone: '', email: '', subject: '', message: '' });
+        }, 4000);
+      } else {
+        alert('Server returned an error while submitting enquiry.');
+      }
+    } catch (err) {
+      console.error('Enquiry submit error:', err);
+      alert('Network error submitting contact request.');
+    }
   };
 
   return (
