@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql-db:
     image: mysql:8.0
@@ -11,7 +9,7 @@ services:
       MYSQL_USER: j3_user
       MYSQL_PASSWORD: j3_password_123
     ports:
-      - "3306:3306"
+      - "3309:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./backend/Database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -29,7 +27,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "5000:8080"
+      - "5005:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=mysql-db;Port=3306;Database=j3dental_db;Uid=j3_user;Pwd=j3_password_123;
