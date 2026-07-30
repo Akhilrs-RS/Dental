@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logosImg from '../assets/logos.png';
 
 export default function AdminPage({ onNavigateHome }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,6 +19,7 @@ export default function AdminPage({ onNavigateHome }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [clinics, setClinics] = useState([]);
   const [pickups, setPickups] = useState([]);
+  const [labCases, setLabCases] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,20 +35,23 @@ export default function AdminPage({ onNavigateHome }) {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [clinicsRes, pickupsRes, enquiriesRes] = await Promise.all([
+      const [clinicsRes, pickupsRes, enquiriesRes, casesRes] = await Promise.all([
         fetch('http://localhost:5005/api/admin/clinics'),
         fetch('http://localhost:5005/api/pickup'),
-        fetch('http://localhost:5005/api/contact')
+        fetch('http://localhost:5005/api/contact'),
+        fetch('http://localhost:5005/api/labcases')
       ]);
 
-      if (clinicsRes.ok && pickupsRes.ok && enquiriesRes.ok) {
+      if (clinicsRes.ok && pickupsRes.ok && enquiriesRes.ok && casesRes.ok) {
         const clinicsData = await clinicsRes.json();
         const pickupsData = await pickupsRes.json();
         const enquiriesData = await enquiriesRes.json();
+        const casesData = await casesRes.json();
 
         setClinics(clinicsData);
         setPickups(pickupsData);
         setEnquiries(enquiriesData);
+        setLabCases(casesData);
       } else {
         console.error('Error fetching admin dashboard lists');
       }
@@ -133,7 +138,9 @@ export default function AdminPage({ onNavigateHome }) {
     return (
       <div className="admin-portal-wrapper">
         <div className="admin-auth-card">
-          <div className="admin-auth-logo" onClick={onNavigateHome}>J3 DENTAL LAB</div>
+          <div className="admin-auth-logo" onClick={onNavigateHome}>
+            <img src={logosImg} alt="J3 Dental Lab Logo" style={{ maxHeight: '40px', objectFit: 'contain' }} />
+          </div>
           <h2 className="admin-auth-title">Admin Portal</h2>
           <p className="admin-auth-subtitle">Login to access clinical registry and orders console</p>
 
@@ -182,7 +189,9 @@ export default function AdminPage({ onNavigateHome }) {
     return (
       <div className="admin-portal-wrapper">
         <div className="admin-auth-card">
-          <div className="admin-auth-logo" onClick={onNavigateHome}>J3 DENTAL LAB</div>
+          <div className="admin-auth-logo" onClick={onNavigateHome}>
+            <img src={logosImg} alt="J3 Dental Lab Logo" style={{ maxHeight: '40px', objectFit: 'contain' }} />
+          </div>
           <h2 className="admin-auth-title">Reset Password</h2>
           <p className="admin-auth-subtitle">Provide your administrator email to initiate credential recovery</p>
 
@@ -228,7 +237,9 @@ export default function AdminPage({ onNavigateHome }) {
       {/* Sidebar Panel */}
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
-          <div className="admin-logo-mark">J3</div>
+          <div className="admin-logo-mark">
+            <img src={logosImg} alt="J3 Dental Lab Logo" style={{ maxHeight: '30px', objectFit: 'contain' }} />
+          </div>
           <div>
             <h3 className="admin-sidebar-title">Admin Console</h3>
             <span className="admin-operator-tag">System Operator</span>
@@ -247,6 +258,12 @@ export default function AdminPage({ onNavigateHome }) {
             onClick={() => setActiveTab('clinics')}
           >
             Clinic Accounts
+          </button>
+          <button 
+            className={`admin-nav-item ${activeTab === 'labcases' ? 'active' : ''}`}
+            onClick={() => setActiveTab('labcases')}
+          >
+            Lab Cases
           </button>
           <button 
             className={`admin-nav-item ${activeTab === 'pickups' ? 'active' : ''}`}
@@ -278,6 +295,7 @@ export default function AdminPage({ onNavigateHome }) {
               {activeTab === 'overview' && 'System Overview'}
               {activeTab === 'clinics' && 'Clinic Registry'}
               {activeTab === 'pickups' && 'Pickup Requests Ledger'}
+              {activeTab === 'labcases' && 'Lab Cases Register'}
               {activeTab === 'enquiries' && 'Enquiry Submissions'}
             </h1>
             <p className="admin-panel-desc">Manage accounts, coordinate pickups, and audit communications</p>
@@ -415,6 +433,44 @@ export default function AdminPage({ onNavigateHome }) {
                             <option value="Completed">Completed</option>
                           </select>
                         </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+
+          {/* TAB 5: LAB CASES TABLE */}
+          {activeTab === 'labcases' && (
+            <div className="admin-table-container">
+              {loading ? (
+                <div className="admin-loading-spinner">Loading lab cases...</div>
+              ) : labCases.length === 0 ? (
+                <div className="admin-empty-state">No lab cases submitted yet.</div>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Patient Name</th>
+                      <th>Clinic/Dr</th>
+                      <th>Delivery Date</th>
+                      <th>Materials</th>
+                      <th>Delivery</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {labCases.map((c) => (
+                      <tr key={c.id}>
+                        <td className="bold">{c.id}</td>
+                        <td className="bold text-gold">{c.patientName}</td>
+                        <td>{c.clinicName}<br/><span className="dim">{c.doctorName}</span></td>
+                        <td>{c.expectedDeliveryDate}</td>
+                        <td>{c.materials}</td>
+                        <td>{c.deliveryOption}</td>
+                        <td className="bold">{c.status}</td>
                       </tr>
                     ))}
                   </tbody>

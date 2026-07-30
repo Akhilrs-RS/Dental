@@ -62,6 +62,24 @@ CREATE TABLE IF NOT EXISTS `ContactEnquiries` (
     `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS `LabCases` (
+    `Id` INT AUTO_INCREMENT PRIMARY KEY,
+    `PatientName` VARCHAR(150) NOT NULL,
+    `PatientAge` VARCHAR(20) NOT NULL,
+    `Gender` VARCHAR(20) NOT NULL,
+    `ClinicName` VARCHAR(150) NOT NULL,
+    `DoctorName` VARCHAR(100) NOT NULL,
+    `MobileNumber` VARCHAR(20) NOT NULL,
+    `ExpectedDeliveryDate` VARCHAR(50) NOT NULL,
+    `Priority` VARCHAR(50) NOT NULL,
+    `Materials` VARCHAR(255) NOT NULL,
+    `TeethConfig` TEXT NOT NULL,
+    `DeliveryOption` VARCHAR(50) NOT NULL,
+    `Notes` TEXT NOT NULL,
+    `Status` VARCHAR(50) DEFAULT 'Pending',
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Delete old rows to prevent duplicates on restart/init
 TRUNCATE TABLE `Products`;
 TRUNCATE TABLE `Services`;

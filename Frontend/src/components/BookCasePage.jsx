@@ -126,15 +126,20 @@ export default function BookCasePage({ onBack }) {
     try {
       const payload = {
         patientName: patientDetails.patientName,
-        doctorName: patientDetails.doctorName,
+        patientAge: patientDetails.patientAge,
+        gender: patientDetails.gender,
         clinicName: patientDetails.clinicName,
-        date: patientDetails.expectedDeliveryDate || new Date().toISOString().split('T')[0],
-        time: '12:00',
+        doctorName: patientDetails.doctorName,
+        mobileNumber: patientDetails.mobileNumber,
+        expectedDeliveryDate: patientDetails.expectedDeliveryDate || new Date().toISOString().split('T')[0],
+        priority: patientDetails.priority,
         materials: selectedProducts.map(p => PRODUCTS_LIST.find(pl => pl.id === p)?.name).join(', ') || 'Zirconia Restorations',
-        notes: `Teeth: ${Object.keys(selectedTeeth).map(k => `${k}(${selectedTeeth[k].type})`).join(', ') || 'None'}. Delivery Option: ${pickupOption}. Notes: ${patientDetails.notes}`
+        teethConfig: Object.keys(selectedTeeth).map(k => `${k}(${selectedTeeth[k].type})`).join(', ') || 'None',
+        deliveryOption: pickupOption,
+        notes: patientDetails.notes
       };
 
-      const res = await fetch('http://localhost:5005/api/pickup', {
+      const res = await fetch('http://localhost:5005/api/labcases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

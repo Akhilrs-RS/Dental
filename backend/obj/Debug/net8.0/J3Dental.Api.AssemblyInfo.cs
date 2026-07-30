@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("J3Dental.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+375a64092aa7a03a6f818c6429185e9dc73411d9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff24d1e5ec843b04bcb7108b1a97ea86a759c8e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("J3Dental.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("J3Dental.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

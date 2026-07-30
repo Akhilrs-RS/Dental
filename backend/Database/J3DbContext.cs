@@ -14,6 +14,7 @@ namespace J3Dental.Api.Database
         public DbSet<ContactEnquiry> ContactEnquiries { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<LabCase> LabCases { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
