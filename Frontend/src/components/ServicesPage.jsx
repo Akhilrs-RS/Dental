@@ -185,7 +185,7 @@ export default function ServicesPage({ onNavigate }) {
                 <button className="btn-service-detail" onClick={() => onNavigate('contact')}>
                   View Detail
                 </button>
-                <button className="btn-service-book" onClick={() => onNavigate('scheduler')}>
+                <button className="btn-service-book" onClick={() => onNavigate('book-case')}>
                   Book Case &rarr;
                 </button>
               </div>

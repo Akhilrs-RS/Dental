@@ -12,6 +12,7 @@ import PickupRequestPage from './PickupRequestPage';
 import GalleryPage from './GalleryPage';
 import ContactPage from './ContactPage';
 import RegisterPage from './RegisterPage';
+import BookCasePage from './BookCasePage';
 import logosImg from '../assets/logos.png';
 import teImg from '../assets/te.png';
 
@@ -765,11 +766,12 @@ export default function LandingPage({ onNavigate }) {
 
             {/* Subpages Routing */}
             {landingView === 'about' && <AboutPage onNavigate={onNavigate} />}
-            {landingView === 'services' && <ServicesPage onNavigate={onNavigate} />}
+            {landingView === 'services' && <ServicesPage onNavigate={(view) => setLandingView(view)} />}
             {landingView === 'products' && <ProductsPage onNavigate={onNavigate} />}
             {landingView === 'pickup' && <PickupRequestPage onNavigate={onNavigate} />}
             {landingView === 'gallery' && <GalleryPage />}
             {landingView === 'contact' && <ContactPage />}
+            {landingView === 'book-case' && <BookCasePage onBack={() => setLandingView('services')} />}
           </div>
         )}
 
