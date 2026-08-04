@@ -4,45 +4,35 @@ import logosImg from '../assets/logos.png';
 const PRODUCT_DATA = [
   // 1. Full Contour Zirconia
   { id: 1, name: "Monolithic Zirconia Crown", category: "full-contour", material: "Zirconia", use: "Posterior", turnaround: "5d", price: "₹4,500" },
-  { id: 2, name: "Posterior Zirconia", category: "full-contour", material: "Zirconia", use: "Posterior crowns", turnaround: "6d", price: "₹4,200" },
+  { id: 2, name: "Posterior Zirconia", category: "full-contour", material: "Zirconia", use: "Posterior crowns", turnaround: "5d", price: "₹4,200" },
   { id: 3, name: "Anterior Zirconia", category: "full-contour", material: "Zirconia", use: "Anterior crowns", turnaround: "6d", price: "₹4,800" },
   { id: 4, name: "Multi-Layer Zirconia", category: "full-contour", material: "Zirconia", use: "Aesthetic crowns", turnaround: "6d", price: "₹5,200" },
-  { id: 5, name: "Premium Esthetic Zirconia", category: "full-contour", material: "Zirconia", use: "High-esthetic", turnaround: "7d", price: "₹6,500" },
-  { id: 9, name: "Bridge Zirconia", category: "full-contour", material: "Zirconia", use: "Multi-unit bridges", turnaround: "8d", price: "₹5,200" },
-  { id: 10, name: "Long Span Bridge", category: "full-contour", material: "Zirconia", use: "Full arch bridges", turnaround: "10d", price: "₹6,800" },
-
-  // 2. Layered Zirconia
+  { id: 5, name: "Premium Esthetic Zirconia", category: "full-contour", material: "Zirconia", use: "High-aesthetic", turnaround: "7d", price: "₹6,500" },
   { id: 6, name: "Anterior Layered Zirconia", category: "layered", material: "Zirconia + Ceramic", use: "Anterior aesthetics", turnaround: "7d", price: "₹5,800" },
   { id: 7, name: "Posterior Layered Zirconia", category: "layered", material: "Zirconia + Ceramic", use: "Posterior strength", turnaround: "7d", price: "₹5,500" },
-  { id: 8, name: "Implant Zirconia", category: "layered", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹7,500" },
-
-  // 3. E-Max Restorations
+  { id: 8, name: "Implant Zirconia", category: "full-contour", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹7,500" },
+  { id: 9, name: "Bridge Zirconia", category: "full-contour", material: "Zirconia", use: "Multi-unit bridges", turnaround: "8d", price: "₹5,200" },
+  { id: 10, name: "Long Span Bridge", category: "full-contour", material: "Zirconia", use: "Full arch bridges", turnaround: "10d", price: "₹6,800" },
   { id: 11, name: "E-Max Crown", category: "emax", material: "Lithium Disilicate", use: "Anterior crowns", turnaround: "5d", price: "₹5,000" },
   { id: 12, name: "E-Max Veneer", category: "emax", material: "Lithium Disilicate", use: "Aesthetic veneers", turnaround: "5d", price: "₹4,800" },
   { id: 13, name: "E-Max Inlay", category: "emax", material: "Lithium Disilicate", use: "Conservative", turnaround: "5d", price: "₹4,200" },
   { id: 14, name: "E-Max Onlay", category: "emax", material: "Lithium Disilicate", use: "Conservative", turnaround: "5d", price: "₹4,500" },
   { id: 15, name: "E-Max Overlay", category: "emax", material: "Lithium Disilicate", use: "Full coverage", turnaround: "5d", price: "₹4,700" },
   { id: 16, name: "E-Max Bridge", category: "emax", material: "Lithium Disilicate", use: "Short span", turnaround: "7d", price: "₹6,200" },
-
-  // 4. Implant Prosthetics
-  { id: 17, name: "Screw Retained Crown", category: "implants", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹9,500" },
+  { id: 17, name: "Screw Retained Crown", category: "implants", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹8,500" },
   { id: 18, name: "Cement Retained Crown", category: "implants", material: "Zirconia", use: "Implant supported", turnaround: "8d", price: "₹8,000" },
-  { id: 19, name: "Custom Abutment", category: "implants", material: "Titanium / Zirconia", use: "Implant abutment", turnaround: "6d", price: "₹6,500" },
+  { id: 19, name: "Custom Abutment", category: "implants", material: "Titanium / Zirconia", use: "Implant abutment", turnaround: "6d", price: "₹4,500" },
   { id: 20, name: "Healing Abutment", category: "implants", material: "Titanium", use: "Healing phase", turnaround: "3d", price: "₹2,500" },
-  { id: 21, name: "Temporary Crown (Implant)", category: "implants", material: "PMMA", use: "Interim", turnaround: "3d", price: "₹3,000" },
-  { id: 22, name: "Implant Bridge", category: "implants", material: "Zirconia", use: "Multi-implant", turnaround: "10d", price: "₹9,500" },
-  { id: 23, name: "Full Arch Implant", category: "implants", material: "Zirconia", use: "Full arch restoration", turnaround: "12d", price: "₹19,500" },
-
-  // 5. CAD/CAM Services
+  { id: 21, name: "Temporary Crown (Implant)", category: "implants", material: "PMMA", use: "Interim", turnaround: "3d", price: "₹1,000" },
+  { id: 22, name: "Implant Bridge", category: "implants", material: "Zirconia", use: "Multi implant", turnaround: "8d", price: "₹9,500" },
+  { id: 23, name: "Full Arch Implant", category: "implants", material: "Zirconia", use: "Full arch restoration", turnaround: "12d", price: "₹18,500" },
   { id: 24, name: "Digital Design", category: "cadcam", material: "Digital", use: "CAD design", turnaround: "2d", price: "₹1,500" },
   { id: 25, name: "CAD Designing", category: "cadcam", material: "Digital", use: "Full design", turnaround: "2d", price: "₹2,000" },
-  { id: 26, name: "CAM Milling", category: "cadcam", material: "Zirconia/PMMA", use: "Milling", turnaround: "1d", price: "₹1,200" },
-  { id: 27, name: "Wax Pattern", category: "cadcam", material: "Wax", use: "Casting pattern", turnaround: "2d", price: "₹1,000" },
-  { id: 28, name: "PMMA", category: "cadcam", material: "PMMA", use: "Temporary", turnaround: "3d", price: "₹1,800" },
+  { id: 26, name: "CAM Milling", category: "cadcam", material: "Zirconia/PMMA", use: "Milling", turnaround: "2d", price: "₹1,200" },
+  { id: 27, name: "Wax Pattern", category: "cadcam", material: "Wax", use: "Casting pattern", turnaround: "3d", price: "₹1,000" },
+  { id: 28, name: "PMMA", category: "cadcam", material: "PMMA", use: "Temporary", turnaround: "3d", price: "₹1,300" },
   { id: 29, name: "Diagnostic Wax-Up", category: "cadcam", material: "Wax", use: "Planning", turnaround: "3d", price: "₹1,500" },
   { id: 30, name: "Smile Design", category: "cadcam", material: "Digital", use: "Aesthetic planning", turnaround: "3d", price: "₹4,000" },
-
-  // 6. Shade Matching
   { id: 31, name: "Standard Shade", category: "shade", material: "Digital", use: "Vita Classical", turnaround: "1d", price: "₹500" },
   { id: 32, name: "Custom Shade", category: "shade", material: "Custom", use: "Bespoke match", turnaround: "1d", price: "₹1,200" },
   { id: 33, name: "Digital Shade", category: "shade", material: "Spectrophotometer", use: "Precise match", turnaround: "1d", price: "₹1,500" },
@@ -62,29 +52,6 @@ const TABS = [
 export default function ProductsPage({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('all');
   const [products, setProducts] = useState(PRODUCT_DATA);
-
-  React.useEffect(() => {
-    fetch('http://localhost:5005/api/catalog/products')
-      .then(res => {
-        if (res.ok) return res.json();
-        throw new Error();
-      })
-      .then(data => {
-        if (data && data.length > 0) {
-          const mapped = data.map(item => ({
-            id: item.id,
-            name: item.name,
-            category: item.category,
-            material: item.material,
-            use: item.indicatedUse,
-            turnaround: item.turnaroundTime,
-            price: `₹${item.price.toLocaleString('en-IN')}`
-          }));
-          setProducts(mapped);
-        }
-      })
-      .catch(err => console.log('Using local products list fallback.'));
-  }, []);
 
   const filteredProducts = products.filter(product => {
     return activeTab === 'all' || product.category === activeTab;
