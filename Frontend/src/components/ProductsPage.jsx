@@ -159,13 +159,15 @@ export default function ProductsPage({ onNavigate }) {
                       <span>{product.turnaround}</span>
                     </td>
                     <td className="product-price-action-cell">
-                      <span className="product-price-bold">{product.price}</span>
-                      <button 
-                        className="product-add-action-btn"
-                        onClick={() => onNavigate('planner')}
-                      >
-                        + Add
-                      </button>
+                      <div className="product-price-action-inner">
+                        <span className="product-price-bold">{product.price}</span>
+                        <button 
+                          className="product-add-action-btn"
+                          onClick={() => onNavigate('book-case')}
+                        >
+                          + Add
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

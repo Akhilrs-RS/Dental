@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import homeBg from '../assets/home.png';
 import Footer from './Footer';
 import dImg from '../assets/d.png';
@@ -94,6 +94,57 @@ export default function LandingPage({ onNavigate }) {
   const [trackingStageIndex, setTrackingStageIndex] = useState(6);
   const [landingView, setLandingView] = useState('home');
 
+  // Animation Refs and States
+  const timelineRef = useRef(null);
+  const pickupRef = useRef(null);
+  const toothChartRef = useRef(null);
+  
+  const [isTimelineVisible, setIsTimelineVisible] = useState(false);
+  const [isPickupVisible, setIsPickupVisible] = useState(false);
+  const [isToothChartVisible, setIsToothChartVisible] = useState(false);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.2
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.target === timelineRef.current && entry.isIntersecting) {
+          setIsTimelineVisible(true);
+        }
+        if (entry.target === pickupRef.current && entry.isIntersecting) {
+          setIsPickupVisible(true);
+        }
+        if (entry.target === toothChartRef.current && entry.isIntersecting) {
+          setIsToothChartVisible(true);
+        }
+      });
+    }, observerOptions);
+
+    if (timelineRef.current) observer.observe(timelineRef.current);
+    if (pickupRef.current) observer.observe(pickupRef.current);
+    if (toothChartRef.current) observer.observe(toothChartRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Auto-cycle reviews
+  useEffect(() => {
+    if (landingView !== 'home') return;
+    const interval = setInterval(() => {
+      setTestimonialIndex(prev => (prev + 1) % 3);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [landingView]);
+
+  // Scroll to top when view changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [landingView]);
+
   const REVIEWS_LIST = [
     {
       quote: "The digital case submission and live tracking have completely changed how we work with our lab. We always know exactly where a case is in production.",
@@ -185,7 +236,7 @@ export default function LandingPage({ onNavigate }) {
                   </h1>
                   
                   <div className="landing-actions">
-                    <button className="btn-gold" onClick={() => onNavigate('scheduler')}>
+                    <button className="btn-gold" onClick={() => setLandingView('book-case')}>
                       Book a Lab Case
                     </button>
                     <button className="btn-outline-white" onClick={() => setLandingView('products')}>
@@ -231,14 +282,14 @@ export default function LandingPage({ onNavigate }) {
 
         {/* Footer Navigation */}
         <footer className="landing-footer">
-          <div className="landing-footer-item" onClick={() => onNavigate('planner')}>
+          <div className="landing-footer-item" onClick={() => setLandingView('book-case')}>
             <div className="landing-footer-icon">
               <DocumentIcon />
             </div>
             <span>Digital Case Submission</span>
           </div>
 
-          <div className="landing-footer-item" onClick={() => onNavigate('patients')}>
+          <div className="landing-footer-item" onClick={() => setLandingView('book-case')}>
             <div className="landing-footer-icon">
               <ToothIcon />
             </div>
@@ -391,7 +442,7 @@ export default function LandingPage({ onNavigate }) {
         </section>
 
         {/* Section 3: Case Tracking Section */}
-        <section className="landing-tracking-section">
+        <section className="landing-tracking-section" ref={timelineRef}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
             <span className="landing-section-tag" style={{ color: '#dda73c', textTransform: 'none' }}>Digital Workflow</span>
             <h2 className="landing-section-title" style={{ marginTop: '12px' }}>
@@ -405,7 +456,7 @@ export default function LandingPage({ onNavigate }) {
               <div className="landing-timeline-line"></div>
               <div 
                 className="landing-timeline-progress-line" 
-                style={{ width: `${(trackingStageIndex / 8) * 100}%` }}
+                style={{ width: isTimelineVisible ? `${(trackingStageIndex / 8) * 100}%` : '0%' }}
               ></div>
 
               {[
@@ -495,8 +546,8 @@ export default function LandingPage({ onNavigate }) {
         </section>
 
         {/* Section 4: Interactive Tooth Chart Section */}
-        <section className="landing-toothchart-promo-section">
-          <div className="landing-toothchart-grid">
+        <section className="landing-toothchart-promo-section" ref={toothChartRef}>
+          <div className={`landing-toothchart-grid pop-up-hidden ${isToothChartVisible ? 'pop-up-visible' : ''}`}>
             <div className="landing-toothchart-info">
               <span className="landing-toothchart-tag">Interactive Dental Chart</span>
               <h2 className="landing-toothchart-title">
@@ -530,7 +581,7 @@ export default function LandingPage({ onNavigate }) {
                 </div>
               </div>
 
-              <button className="btn-toothchart-gold" onClick={() => setLandingView('register')}>
+              <button className="btn-toothchart-gold" onClick={() => setLandingView('book-case')}>
                 Try the Digital Prescription &rarr;
               </button>
             </div>
@@ -544,8 +595,8 @@ export default function LandingPage({ onNavigate }) {
         </section>
 
         {/* Section 5: Courier Pickup Section */}
-        <section className="landing-courier-section">
-          <div className="landing-courier-grid">
+        <section className="landing-courier-section" ref={pickupRef}>
+          <div className={`landing-courier-grid pop-up-hidden ${isPickupVisible ? 'pop-up-visible' : ''}`}>
             <div className="landing-courier-info">
               <span className="landing-courier-tag-pickup">Pickup Service</span>
               <h2 className="landing-courier-title-pickup">
@@ -648,7 +699,7 @@ export default function LandingPage({ onNavigate }) {
                   <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
                 </svg>
               </div>
-              <div className="reviews-card-body">
+              <div className="reviews-card-body" key={testimonialIndex} style={{ animation: 'slideInLeft 0.5s ease forwards' }}>
                 <p className="reviews-quote-text">
                   "{REVIEWS_LIST[testimonialIndex].quote}"
                 </p>
@@ -767,7 +818,7 @@ export default function LandingPage({ onNavigate }) {
             {/* Subpages Routing */}
             {landingView === 'about' && <AboutPage onNavigate={onNavigate} />}
             {landingView === 'services' && <ServicesPage onNavigate={(view) => setLandingView(view)} />}
-            {landingView === 'products' && <ProductsPage onNavigate={onNavigate} />}
+            {landingView === 'products' && <ProductsPage onNavigate={(view) => setLandingView(view)} />}
             {landingView === 'pickup' && <PickupRequestPage onNavigate={onNavigate} />}
             {landingView === 'gallery' && <GalleryPage />}
             {landingView === 'contact' && <ContactPage />}
@@ -1107,7 +1158,7 @@ export default function LandingPage({ onNavigate }) {
                   <button 
                     onClick={() => {
                       setActiveModal(null);
-                      onNavigate('patients');
+                      setLandingView('book-case');
                     }}
                     className="btn btn-primary" 
                     style={{ width: '100%', padding: '10px', fontSize: '11px', background: 'linear-gradient(135deg, #0d9488, #0284c7)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}

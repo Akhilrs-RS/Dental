@@ -2531,27 +2531,30 @@ a {
   color: #dda73c;
 }.landing-about-carousel {
   display: flex;
-  gap: 20px;
+  gap: 0;
   overflow-x: auto;
-  padding: 20px 0;
+  padding: 0;
   max-width: 1280px;
   margin: 0 auto;
   width: 100%;
   align-items: center;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
 }
 
 .landing-about-carousel::-webkit-scrollbar {
-  height: 6px;
+  display: none; /* Hide the white line */
 }
 
 .landing-carousel-item {
   flex: 0 0 auto;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
   cursor: pointer;
+  scroll-snap-align: center;
 }
 
 /* First item: large square */
@@ -2559,7 +2562,6 @@ a {
   width: 280px;
   height: 280px;
   min-width: 280px;
-  border-radius: 24px;
 }
 
 /* Other items: smaller squares */
@@ -2567,7 +2569,6 @@ a {
   width: 180px;
   height: 180px;
   min-width: 180px;
-  border-radius: 16px;
   opacity: 0.85;
 }
 
@@ -2710,7 +2711,19 @@ a {
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
-  transition: width 0.4s ease;
+  transition: width 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Scroll Animation Classes */
+.pop-up-hidden {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+}
+
+.pop-up-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .landing-timeline-step {
@@ -4400,11 +4413,16 @@ a {
 }
 
 .product-price-action-cell {
+  text-align: right;
+  vertical-align: middle;
+  padding-right: 16px;
+}
+
+.product-price-action-inner {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  gap: 16px;
-  box-sizing: border-box;
+  gap: 32px; /* Matches the spacing in the screenshot */
 }
 
 .product-price-bold {
@@ -5668,6 +5686,17 @@ a {
 .reviews-slider-dot.active {
   background-color: #dda73c;
   transform: scale(1.2);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Responsiveness overrides for Reviews Section */
