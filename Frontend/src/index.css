@@ -1246,17 +1246,17 @@ a {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 20px;
+  padding: 0;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
 .landing-container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 100%;
   height: auto;
-  min-height: calc(100vh - 40px);
-  border-radius: 28px;
+  min-height: 100vh;
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;

@@ -75,6 +75,35 @@ export default function BookCasePage({ onBack }) {
   const primaryLowerLeft = [71, 72, 73, 74, 75];
   const primaryLowerRight = [85, 84, 83, 82, 81];
 
+  const handleNextStep = () => {
+    if (currentStep === 1) {
+      if (!patientDetails.patientName.trim()) {
+        alert("Please enter the Patient Name.");
+        return;
+      }
+      if (!patientDetails.patientAge) {
+        alert("Please enter the Patient Age.");
+        return;
+      }
+      if (!patientDetails.mobileNumber.trim()) {
+        alert("Please enter a Mobile Number.");
+        return;
+      }
+    } else if (currentStep === 2) {
+      if (selectedProducts.length === 0) {
+        alert("Please select at least one product before continuing.");
+        return;
+      }
+    } else if (currentStep === 3) {
+      if (Object.keys(selectedTeeth).length === 0) {
+        alert("Please select at least one tooth on the chart before continuing.");
+        return;
+      }
+    }
+    
+    setCurrentStep(currentStep + 1);
+  };
+
   const handleProductToggle = (productId) => {
     setSelectedProducts(prev => 
       prev.includes(productId) 
@@ -575,7 +604,7 @@ export default function BookCasePage({ onBack }) {
           </button>
 
           {currentStep < 6 ? (
-            <button className="btn-continue-step" onClick={() => setCurrentStep(currentStep + 1)}>
+            <button className="btn-continue-step" onClick={handleNextStep}>
               Continue &rarr;
             </button>
           ) : (

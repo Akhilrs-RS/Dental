@@ -246,36 +246,6 @@ export default function LandingPage({ onNavigate }) {
                 </div>
 
             <div className="landing-hero-right">
-              {/* Live Case Card */}
-              <div className="landing-live-case-card">
-                <div className="landing-live-case-title">Live Case</div>
-                
-                <div className="landing-live-case-row">
-                  <span className="landing-live-case-label">Case Number</span>
-                  <span className="landing-live-case-value">J3-2486</span>
-                </div>
-                
-                <div className="landing-live-case-row">
-                  <span className="landing-live-case-label">Current Stage</span>
-                  <span className="landing-live-case-value">CAD design</span>
-                </div>
-                
-                <div className="landing-live-case-row">
-                  <span className="landing-live-case-label">Est Delivery</span>
-                  <span className="landing-live-case-value">Jul 22</span>
-                </div>
-                
-                <div className="landing-live-case-row" style={{ marginTop: '4px' }}>
-                  <span className="landing-live-case-label">Progress</span>
-                  <span className="landing-live-case-value">45%</span>
-                </div>
-
-                <div className="landing-progress-container">
-                  <div className="landing-progress-bar">
-                    <div className="landing-progress-fill" style={{ width: '45%' }}></div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
