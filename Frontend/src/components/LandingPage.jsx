@@ -13,8 +13,10 @@ import GalleryPage from './GalleryPage';
 import ContactPage from './ContactPage';
 import RegisterPage from './RegisterPage';
 import BookCasePage from './BookCasePage';
+import ServiceDetailsPage from './ServiceDetailsPage';
 import logosImg from '../assets/logos.png';
 import teImg from '../assets/te.png';
+import imBg from '../assets/im.png';
 
 
 
@@ -93,6 +95,7 @@ export default function LandingPage({ onNavigate }) {
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [trackingStageIndex, setTrackingStageIndex] = useState(6);
   const [landingView, setLandingView] = useState('home');
+  const [selectedService, setSelectedService] = useState(null);
 
   // Animation Refs and States
   const timelineRef = useRef(null);
@@ -779,20 +782,40 @@ export default function LandingPage({ onNavigate }) {
         </section>
         </>
         ) : (
-          <div className="subpage-wrapper-custom">
+          <div 
+            className="subpage-wrapper-custom"
+            style={landingView === 'service-detail' ? { backgroundColor: '#0b0b0b' } : {}}
+          >
+            {landingView === 'service-detail' && (
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '450px',
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), url(${imBg})`,
+                  backgroundSize: '100% auto',
+                  backgroundPosition: 'center center',
+                  zIndex: 0,
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.2)'
+                }}
+              />
+            )}
             {/* Subpage Header */}
-            <div className="subpage-header-wrapper">
+            <div className="subpage-header-wrapper" style={{ position: 'relative', zIndex: 1 }}>
               {renderHeader()}
             </div>
 
             {/* Subpages Routing */}
             {landingView === 'about' && <AboutPage onNavigate={onNavigate} />}
-            {landingView === 'services' && <ServicesPage onNavigate={(view) => setLandingView(view)} />}
+            {landingView === 'services' && <ServicesPage onNavigate={(view, data) => { setLandingView(view); if (data) setSelectedService(data); }} />}
             {landingView === 'products' && <ProductsPage onNavigate={(view) => setLandingView(view)} />}
             {landingView === 'pickup' && <PickupRequestPage onNavigate={onNavigate} />}
             {landingView === 'gallery' && <GalleryPage />}
             {landingView === 'contact' && <ContactPage />}
             {landingView === 'book-case' && <BookCasePage onBack={() => setLandingView('services')} />}
+            {landingView === 'service-detail' && <ServiceDetailsPage service={selectedService} onNavigate={(view) => setLandingView(view)} />}
           </div>
         )}
 
