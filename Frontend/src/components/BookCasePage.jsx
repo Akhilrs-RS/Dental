@@ -27,17 +27,16 @@ const RESTORATION_TYPES = [
 export default function BookCasePage({ onBack }) {
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Step 1: Patient Details State
   const [patientDetails, setPatientDetails] = useState({
-    clinicName: 'Aura Dental Clinic',
-    doctorName: 'Dr. Anitha Raman',
+    clinicName: '',
+    doctorName: '',
     patientName: '',
     patientAge: '',
-    gender: 'Male',
+    gender: '',
     mobileNumber: '',
-    caseType: 'Crown',
+    caseType: '',
     expectedDeliveryDate: '',
-    priority: 'Normal',
+    priority: '',
     notes: ''
   });
 
@@ -234,6 +233,7 @@ export default function BookCasePage({ onBack }) {
                   value={patientDetails.gender} 
                   onChange={e => setPatientDetails({...patientDetails, gender: e.target.value})}
                 >
+                  <option value="">Select Gender</option>
                   <option>Male</option>
                   <option>Female</option>
                   <option>Other</option>
@@ -254,6 +254,7 @@ export default function BookCasePage({ onBack }) {
                   value={patientDetails.caseType} 
                   onChange={e => setPatientDetails({...patientDetails, caseType: e.target.value})}
                 >
+                  <option value="">Select Case Type</option>
                   <option>Crown</option>
                   <option>Bridge</option>
                   <option>Implant</option>
@@ -275,6 +276,7 @@ export default function BookCasePage({ onBack }) {
                   value={patientDetails.priority} 
                   onChange={e => setPatientDetails({...patientDetails, priority: e.target.value})}
                 >
+                  <option value="">Select Priority</option>
                   <option>Normal</option>
                   <option>High</option>
                 </select>
