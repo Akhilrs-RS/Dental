@@ -5735,7 +5735,8 @@ a {
 }
 
 .fdi-chart-mockup-img {
-  width: 100%;
+  width: 75%;
+  max-width: 600px;
   height: auto;
   object-fit: contain;
   display: block;
