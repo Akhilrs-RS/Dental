@@ -2955,6 +2955,36 @@ a {
   background: #CFA86F;
 }
 
+@keyframes popInTimeline {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fillTimelineLine {
+  0% { width: 0; }
+  100% { width: 44px; }
+}
+
+.pop-up-visible .tracker-dot {
+  opacity: 0;
+  transform: scale(0);
+  animation: popInTimeline 0.4s ease forwards;
+}
+
+.pop-up-visible .tracker-line.active {
+  width: 0;
+  animation: fillTimelineLine 0.4s ease forwards;
+}
+
+.pop-up-visible .tracker-step:nth-child(1) .tracker-dot { animation-delay: 0.2s; }
+.pop-up-visible .tracker-line.active:nth-child(2) { animation-delay: 0.5s; }
+.pop-up-visible .tracker-step:nth-child(3) .tracker-dot { animation-delay: 0.9s; }
+.pop-up-visible .tracker-line.active:nth-child(4) { animation-delay: 1.2s; }
+.pop-up-visible .tracker-step:nth-child(5) .tracker-dot { animation-delay: 1.6s; }
+.pop-up-visible .tracker-step:nth-child(7) .tracker-dot { animation-delay: 1.6s; } /* Just pop in immediately with the previous since it's inactive */
+.pop-up-visible .tracker-step:nth-child(9) .tracker-dot { animation-delay: 1.6s; }
+
 .landing-courier-card-col {
   display: flex;
   justify-content: center;
