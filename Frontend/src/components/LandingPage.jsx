@@ -806,7 +806,7 @@ export default function LandingPage({ onNavigate }) {
             </div>
 
             {/* Subpages Routing */}
-            {landingView === 'about' && <AboutPage onNavigate={onNavigate} />}
+            {landingView === 'about' && <AboutPage onNavigate={(view) => setLandingView(view)} />}
             {landingView === 'services' && <ServicesPage onNavigate={(view, data) => { setLandingView(view); if (data) setSelectedService(data); }} />}
             {landingView === 'products' && <ProductsPage onNavigate={(view) => setLandingView(view)} />}
             {landingView === 'pickup' && <PickupRequestPage onNavigate={onNavigate} />}
