@@ -157,7 +157,7 @@ export default function AboutPage({ onNavigate }) {
           </div>
           <div className="about-cta-card-content-col">
             <h2 className="about-cta-card-title-serif">Ready to work with a laboratory that keeps you informed?</h2>
-            <button className="about-cta-card-btn" onClick={() => onNavigate('scheduler')}>
+            <button className="about-cta-card-btn" onClick={() => onNavigate('register')}>
               Register your clinic &rarr;
             </button>
           </div>
