@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import logosImg from '../assets/logos.png';
 
 const PRODUCT_DATA = [
   // 1. Full Contour Zirconia
@@ -72,9 +71,6 @@ export default function ProductsPage({ onNavigate }) {
           <p className="products-desc-custom">
             Search and filter our full product catalogue. Prices are indicative — logged-in clinics see their custom pricing.
           </p>
-        </div>
-        <div className="products-hero-right">
-          <img src={logosImg} alt="J3 Dental Lab Decorative Logo" className="products-hero-logo" />
         </div>
       </section>
 

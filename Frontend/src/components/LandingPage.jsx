@@ -262,19 +262,17 @@ export default function LandingPage({ onNavigate }) {
             <span>Digital Case Submission</span>
           </div>
 
-          <div className="landing-footer-item" onClick={() => setLandingView('book-case')}>
+          <div className="landing-footer-item" onClick={() => {
+            if (toothChartRef.current) {
+              toothChartRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
             <div className="landing-footer-icon">
               <ToothIcon />
             </div>
             <span>Interactive Tooth Chart</span>
           </div>
 
-          <div className="landing-footer-item" onClick={() => setActiveModal('3d')}>
-            <div className="landing-footer-icon">
-              <CubeIcon />
-            </div>
-            <span>3D Scan Viewer</span>
-          </div>
 
           <div className="landing-footer-item" onClick={() => setLandingView('pickup')}>
             <div className="landing-footer-icon">
@@ -429,7 +427,7 @@ export default function LandingPage({ onNavigate }) {
               <div className="landing-timeline-line"></div>
               <div 
                 className="landing-timeline-progress-line" 
-                style={{ width: isTimelineVisible ? `${(trackingStageIndex / 8) * 100}%` : '0%' }}
+                style={{ '--progress': isTimelineVisible ? `${(trackingStageIndex / 8) * 100}%` : '0%' }}
               ></div>
 
               {[
@@ -1050,121 +1048,6 @@ export default function LandingPage({ onNavigate }) {
         </div>
       )}
 
-      {/* 5. 3D Scan Viewer Modal */}
-      {activeModal === '3d' && (
-        <div className="modal-backdrop" onClick={() => setActiveModal(null)}>
-          <div className="modal-content" style={{ maxWidth: '800px', width: '90%', background: '#070a13', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#fff', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
-            {/* Modal Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              <div>
-                <h3 style={{ fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8' }}>
-                  <span className="pulse-indicator"></span> Live 3D Scan Viewer
-                </h3>
-                <p style={{ fontSize: '11px', color: '#94a3b8' }}>Case #J3-2486 • Mandibular Arch CAD Alignment</p>
-              </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button 
-                  onClick={() => setIsWireframe(!isWireframe)} 
-                  className="btn" 
-                  style={{ background: isWireframe ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.05)', border: `1px solid ${isWireframe ? '#38bdf8' : 'rgba(255,255,255,0.1)'}`, color: isWireframe ? '#38bdf8' : '#fff', padding: '6px 12px', fontSize: '11px', borderRadius: '6px' }}
-                >
-                  {isWireframe ? 'Solid Mode' : 'Wireframe'}
-                </button>
-                <button 
-                  onClick={() => setIsScanning(!isScanning)} 
-                  className="btn" 
-                  style={{ background: isScanning ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.05)', border: `1px solid ${isScanning ? '#10b981' : 'rgba(255,255,255,0.1)'}`, color: isScanning ? '#10b981' : '#fff', padding: '6px 12px', fontSize: '11px', borderRadius: '6px' }}
-                >
-                  {isScanning ? 'Stop Laser' : 'Start Laser'}
-                </button>
-                <button className="modal-close-btn" style={{ position: 'static', color: '#fff', fontSize: '24px', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setActiveModal(null)}>×</button>
-              </div>
-            </div>
-
-            {/* Viewer Workspace */}
-            <div style={{ display: 'grid', gridTemplateColumns: '3fr 1.2fr', height: '420px', position: 'relative' }}>
-              
-              {/* Left Canvas Panel */}
-              <div style={{ background: '#03050a', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                
-                {/* Tech Grid Overlay */}
-                <div style={{ position: 'absolute', width: '100%', height: '100%', background: 'radial-gradient(circle, transparent 20%, #03050a 80%), linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '100% 100%, 20px 20px, 20px 20px', opacity: 0.8, pointerEvents: 'none' }} />
-                
-                {/* Scanning Laser Line */}
-                {isScanning && (
-                  <div style={{ position: 'absolute', left: 0, width: '100%', height: '2px', background: '#00ffcc', boxShadow: '0 0 15px #00ffcc, 0 0 5px #00ffcc', zIndex: 10, animation: 'scanLine 3s ease-in-out infinite' }} />
-                )}
-
-                {/* Rotating SVG Tooth Model */}
-                <div style={{ width: '220px', height: '220px', animation: 'spin3d 12s linear infinite', zIndex: 5, display: 'flex', alignItems: 'center', justifyCenter: 'center' }}>
-                  <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path 
-                      d="M50 10C35 10 25 14 25 32C25 48 36 55 40 64C43 71 39 84 45 90C47 92 50 94 53 92C56 90 58 76 61 70C65 62 75 55 75 32C75 14 65 10 50 10Z" 
-                      fill={isWireframe ? 'rgba(56,189,248,0.05)' : 'rgba(56, 189, 248, 0.15)'}
-                      stroke="#38bdf8" 
-                      strokeWidth={isWireframe ? '1' : '3'}
-                      strokeDasharray={isWireframe ? '4 2' : 'none'}
-                    />
-                    <path 
-                      d="M38 32C38 32 44 26 50 32C56 38 62 32 62 32" 
-                      stroke="#38bdf8" 
-                      strokeWidth="2" 
-                      strokeDasharray={isWireframe ? '3 3' : 'none'}
-                    />
-                    <path 
-                      d="M48 65C48 65 42 75 43 85M52 65C52 65 58 75 57 85" 
-                      stroke="#38bdf8" 
-                      strokeWidth="2" 
-                      strokeDasharray={isWireframe ? '3 3' : 'none'}
-                    />
-                  </svg>
-                </div>
-
-                {/* Tech Compass / Axis indicator */}
-                <div style={{ position: 'absolute', bottom: '16px', left: '16px', display: 'flex', gap: '8px', fontSize: '9px', fontFamily: 'monospace', color: '#64748b' }}>
-                  <div>X: <span style={{ color: '#38bdf8' }}>-12.4</span></div>
-                  <div>Y: <span style={{ color: '#10b981' }}>+48.1</span></div>
-                  <div>Z: <span style={{ color: '#dda73c' }}>+102.7</span></div>
-                </div>
-              </div>
-
-              {/* Right Sidebar Info Panel */}
-              <div style={{ padding: '20px', borderLeft: '1px solid rgba(255,255,255,0.08)', background: '#070a13', display: 'flex', flexDirection: 'column', gap: '16px', fontFamily: 'monospace', fontSize: '11px', color: '#cbd5e1' }}>
-                <div>
-                  <div style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase' }}>Scan Source</div>
-                  <div style={{ color: '#fff', fontWeight: 'bold', marginTop: '2px' }}>Intraoral Scanner v4.5</div>
-                </div>
-                <div>
-                  <div style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase' }}>Accuracy Tolerance</div>
-                  <div style={{ color: '#10b981', fontWeight: 'bold', marginTop: '2px' }}>± 18 Microns [Optimal]</div>
-                </div>
-                <div>
-                  <div style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase' }}>Surface Triangles</div>
-                  <div style={{ color: '#fff', fontWeight: 'bold', marginTop: '2px' }}>1,482,042 Polys</div>
-                </div>
-                <div>
-                  <div style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase' }}>Milling Pathing</div>
-                  <div style={{ color: '#dda73c', fontWeight: 'bold', marginTop: '2px' }}>5-Axis Wet Milling Ready</div>
-                </div>
-                
-                <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                  <button 
-                    onClick={() => {
-                      setActiveModal(null);
-                      setLandingView('book-case');
-                    }}
-                    className="btn btn-primary" 
-                    style={{ width: '100%', padding: '10px', fontSize: '11px', background: 'linear-gradient(135deg, #0d9488, #0284c7)', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
-                  >
-                    Open Diagnostic Chart
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 6. Gallery Modal */}
       {activeModal === 'gallery' && (

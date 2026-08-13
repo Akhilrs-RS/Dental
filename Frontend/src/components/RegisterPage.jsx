@@ -16,6 +16,7 @@ export default function RegisterPage({ onBack }) {
     confirmPassword: ''
   });
   const [registered, setRegistered] = useState(false);
+  const [isLoginView, setIsLoginView] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,8 +58,14 @@ export default function RegisterPage({ onBack }) {
       {/* Right Column: Form Panel */}
       <div className="register-form-col">
         <div className="register-form-header">
-          <h1 className="register-page-title">Register Your Clinic</h1>
-          <p className="register-page-subtitle">Create a clinic account to submit cases and track production</p>
+          <h1 className="register-page-title">
+            {isLoginView ? "Login to Your Account" : "Register Your Clinic"}
+          </h1>
+          <p className="register-page-subtitle">
+            {isLoginView 
+              ? "Access your clinic portal to manage cases" 
+              : "Create a clinic account to submit cases and track production"}
+          </p>
         </div>
 
         {/* White Card Box */}
@@ -66,9 +73,13 @@ export default function RegisterPage({ onBack }) {
           {registered ? (
             <div className="register-success-msg">
               <div className="register-success-icon">✓</div>
-              <h3 className="register-success-title">Account Created!</h3>
+              <h3 className="register-success-title">
+                {isLoginView ? "Login Successful!" : "Account Created!"}
+              </h3>
               <p className="register-success-desc">
-                Your clinic registration has been submitted successfully. Redirecting you home...
+                {isLoginView 
+                  ? "Redirecting you to your portal..." 
+                  : "Your clinic registration has been submitted successfully. Redirecting..."}
               </p>
             </div>
           ) : (
@@ -87,56 +98,60 @@ export default function RegisterPage({ onBack }) {
 
               {/* Divider line */}
               <div className="register-divider-line">
-                <span>OR CLINIC DETAILS</span>
+                <span>{isLoginView ? "OR EMAIL LOGIN" : "OR CLINIC DETAILS"}</span>
               </div>
 
               {/* Fields Grid */}
               <div className="register-input-grid">
                 
-                <div className="register-input-group">
-                  <label className="register-input-label">Clinic Name *</label>
-                  <input
-                    type="text"
-                    required
-                    className="register-input-field"
-                    value={form.clinicName}
-                    onChange={(e) => setForm({...form, clinicName: e.target.value})}
-                  />
-                </div>
+                {!isLoginView && (
+                  <>
+                    <div className="register-input-group">
+                      <label className="register-input-label">Clinic Name *</label>
+                      <input
+                        type="text"
+                        required
+                        className="register-input-field"
+                        value={form.clinicName}
+                        onChange={(e) => setForm({...form, clinicName: e.target.value})}
+                      />
+                    </div>
 
-                <div className="register-input-group">
-                  <label className="register-input-label">Doctor Name *</label>
-                  <input
-                    type="text"
-                    required
-                    className="register-input-field"
-                    value={form.doctorName}
-                    onChange={(e) => setForm({...form, doctorName: e.target.value})}
-                  />
-                </div>
+                    <div className="register-input-group">
+                      <label className="register-input-label">Doctor Name *</label>
+                      <input
+                        type="text"
+                        required
+                        className="register-input-field"
+                        value={form.doctorName}
+                        onChange={(e) => setForm({...form, doctorName: e.target.value})}
+                      />
+                    </div>
 
-                <div className="register-input-group">
-                  <label className="register-input-label">Phone *</label>
-                  <input
-                    type="tel"
-                    required
-                    className="register-input-field"
-                    value={form.phone}
-                    onChange={(e) => setForm({...form, phone: e.target.value})}
-                  />
-                </div>
+                    <div className="register-input-group">
+                      <label className="register-input-label">Phone *</label>
+                      <input
+                        type="tel"
+                        required
+                        className="register-input-field"
+                        value={form.phone}
+                        onChange={(e) => setForm({...form, phone: e.target.value})}
+                      />
+                    </div>
 
-                <div className="register-input-group">
-                  <label className="register-input-label">GST Number</label>
-                  <input
-                    type="text"
-                    className="register-input-field"
-                    value={form.gstNumber}
-                    onChange={(e) => setForm({...form, gstNumber: e.target.value})}
-                  />
-                </div>
+                    <div className="register-input-group">
+                      <label className="register-input-label">GST Number</label>
+                      <input
+                        type="text"
+                        className="register-input-field"
+                        value={form.gstNumber}
+                        onChange={(e) => setForm({...form, gstNumber: e.target.value})}
+                      />
+                    </div>
+                  </>
+                )}
 
-                <div className="register-input-group span-2">
+                <div className={`register-input-group ${isLoginView ? 'span-2' : 'span-2'}`}>
                   <label className="register-input-label">Email *</label>
                   <input
                     type="email"
@@ -147,52 +162,56 @@ export default function RegisterPage({ onBack }) {
                   />
                 </div>
 
-                <div className="register-input-group span-2">
-                  <label className="register-input-label">Clinic Address*</label>
-                  <input
-                    type="text"
-                    required
-                    className="register-input-field"
-                    value={form.address}
-                    onChange={(e) => setForm({...form, address: e.target.value})}
-                  />
-                </div>
+                {!isLoginView && (
+                  <>
+                    <div className="register-input-group span-2">
+                      <label className="register-input-label">Clinic Address*</label>
+                      <input
+                        type="text"
+                        required
+                        className="register-input-field"
+                        value={form.address}
+                        onChange={(e) => setForm({...form, address: e.target.value})}
+                      />
+                    </div>
 
-                {/* 3 Columns for address details */}
-                <div className="register-input-group span-3-col">
-                  <div>
-                    <label className="register-input-label">City *</label>
-                    <input
-                      type="text"
-                      required
-                      className="register-input-field"
-                      value={form.city}
-                      onChange={(e) => setForm({...form, city: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <label className="register-input-label">State*</label>
-                    <input
-                      type="text"
-                      required
-                      className="register-input-field"
-                      value={form.state}
-                      onChange={(e) => setForm({...form, state: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <label className="register-input-label">Pincode*</label>
-                    <input
-                      type="text"
-                      required
-                      className="register-input-field"
-                      value={form.pincode}
-                      onChange={(e) => setForm({...form, pincode: e.target.value})}
-                    />
-                  </div>
-                </div>
+                    {/* 3 Columns for address details */}
+                    <div className="register-input-group span-3-col">
+                      <div>
+                        <label className="register-input-label">City *</label>
+                        <input
+                          type="text"
+                          required
+                          className="register-input-field"
+                          value={form.city}
+                          onChange={(e) => setForm({...form, city: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <label className="register-input-label">State*</label>
+                        <input
+                          type="text"
+                          required
+                          className="register-input-field"
+                          value={form.state}
+                          onChange={(e) => setForm({...form, state: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <label className="register-input-label">Pincode*</label>
+                        <input
+                          type="text"
+                          required
+                          className="register-input-field"
+                          value={form.pincode}
+                          onChange={(e) => setForm({...form, pincode: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
 
-                <div className="register-input-group">
+                <div className={`register-input-group ${isLoginView ? 'span-2' : ''}`}>
                   <label className="register-input-label">Password *</label>
                   <input
                     type="password"
@@ -203,24 +222,35 @@ export default function RegisterPage({ onBack }) {
                   />
                 </div>
 
-                <div className="register-input-group">
-                  <label className="register-input-label">Confirm*</label>
-                  <input
-                    type="password"
-                    required
-                    className="register-input-field"
-                    value={form.confirmPassword}
-                    onChange={(e) => setForm({...form, confirmPassword: e.target.value})}
-                  />
-                </div>
+                {!isLoginView && (
+                  <div className="register-input-group">
+                    <label className="register-input-label">Confirm*</label>
+                    <input
+                      type="password"
+                      required
+                      className="register-input-field"
+                      value={form.confirmPassword}
+                      onChange={(e) => setForm({...form, confirmPassword: e.target.value})}
+                    />
+                  </div>
+                )}
 
               </div>
 
               {/* Submit Action */}
               <div className="register-action-row">
                 <button type="submit" className="btn-register-submit">
-                  Register Clinic
+                  {isLoginView ? "Sign In" : "Register Clinic"}
                 </button>
+              </div>
+
+              {/* Toggle Link */}
+              <div className="auth-toggle-container">
+                {isLoginView ? (
+                  <span>New to Galletrix? <span className="auth-toggle-link" onClick={() => setIsLoginView(false)}>Register your clinic</span></span>
+                ) : (
+                  <span>Already have an account? <span className="auth-toggle-link" onClick={() => setIsLoginView(true)}>Sign In</span></span>
+                )}
               </div>
 
             </form>
